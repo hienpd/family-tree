@@ -1,0 +1,21 @@
+{
+  "name": "family-tree",
+  "version": "0.1.0",
+  "description": "A simple family tree",
+  "main": "server.js",
+  "scripts": {
+    "knex": "knex",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "postgres"
+  ],
+  "author": "hienpd <hienpd@outlook.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.14.0",
+    "knex": "^0.11.7",
+    "pg": "^6.0.1"
+  }
+}
