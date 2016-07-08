@@ -30,11 +30,6 @@ exports.seed = function(knex) {
       {
         id: 6,
         child_id: 3,
-        parent_id: 2
-      },
-      {
-        id: 7,
-        child_id: 3,
         parent_id: 4
       },
       {

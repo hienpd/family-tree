@@ -3,10 +3,10 @@
 exports.up = function(knex) {
   return knex.schema.createTable('relationships', (table) => {
     table.increments();
-    table.string('parent_id')
-      .defaultTo('');
-    table.string('child_id')
-      .defaultTo('')
+    table.integer('parent_id')
+      .references('people.id');
+    table.integer('child_id')
+      .references('people.id');
     table.timestamps(true, true);
   })
 };
