@@ -6,11 +6,12 @@ exports.up = function(knex) {
     table.string('first_name')
       .notNullable()
       .defaultTo('');
+    table.string('middle_name')
+      .defaultTo('');
     table.string('last_name')
       .notNullable()
       .defaultTo('');
-    table.dateTime('dob')
-      .notNullable();
+    table.date('dob');
     table.string('gender')
       .notNullable()
       .defaultTo('');
