@@ -29,4 +29,17 @@ router.get('/people/:id', (req, res, next) => {
     });
 });
 
+// GET /people/:id/children
+router.get('/people/:id/children', (req, res, next) => {
+  knex('people')
+    .join('relationships', 'relationships.child_id', '=', 'people.id')
+    .where('parent_id', req.params.id)
+    .then((children) => {
+      res.send(children);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 module.exports = router;
