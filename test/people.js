@@ -194,3 +194,28 @@ suite('people', () => {
     }], done);
   });
 });
+
+test('GET people route => OK', (done) => {
+  request(server)
+    .get('/people/2')
+    .expect(200, [{
+      "created_at": "2016-07-08T03:33:59.857Z",
+      "dob": "1963-04-20T07:00:00.000Z",
+      "first_name": "Phung",
+      "gender": "f",
+      "id": 2,
+      "last_name": "Dang",
+      "middle_name": "Thi",
+      "updated_at": "2016-07-08T03:33:59.857Z"
+    }], done);
+  });
+test('GET people/999 route => 404', (done) => {
+  request(server)
+    .get('/people/999')
+    .expect(404, done);
+  });
+test('GET people/nope route => 404', (done) => {
+  request(server)
+    .get('/people/nope')
+    .expect(404, done);
+  });
