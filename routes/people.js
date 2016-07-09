@@ -16,4 +16,17 @@ router.get('/people', (_req, res, next) => {
     });
 });
 
+// GET /people/:id
+router.get('/people/:id', (req, res, next) => {
+  knex('people')
+    .where('id', req.params.id)
+    .first()
+    .then((person) => {
+      res.send(person);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 module.exports = router;
