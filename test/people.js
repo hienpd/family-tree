@@ -8,7 +8,7 @@ const knex = require('../knex');
 const request = require('supertest');
 const server = require('../server');
 
-suite('people', () => {
+suite('people suite', () => {
   before(function(done) {
     knex.migrate.latest()
       .then(() => {
@@ -193,10 +193,8 @@ suite('people', () => {
         "updated_at": "2016-07-08T03:33:59.857Z"
     }], done);
   });
-});
-
-test('GET people/2 route', (done) => {
-  request(server)
+  test('GET people/2 route', (done) => {
+    request(server)
     .get('/people/2')
     .expect(200,
       {
@@ -209,11 +207,11 @@ test('GET people/2 route', (done) => {
         "middle_name": "Thi",
         "updated_at": "2016-07-08T03:33:59.857Z"
       }, done);
-});
-test('GET people/15 route', (done) => {
-  request(server)
-    .get('/people/15')
-    .expect(200, {
+    });
+    test('GET people/15 route', (done) => {
+      request(server)
+      .get('/people/15')
+      .expect(200, {
         "created_at": "2016-07-08T03:33:59.857Z",
         "dob": null,
         "first_name": "Lily",
@@ -222,40 +220,41 @@ test('GET people/15 route', (done) => {
         "last_name": "Saeturn",
         "middle_name": "",
         "updated_at": "2016-07-08T03:33:59.857Z"
-    }, done);
-});
-// test('GET people/999 route => 404', (done) => {
-//   request(server)
-//     .get('/people/999')
-//     .expect(404, done);
-//   });
-// test('GET people/nope route => 404', (done) => {
-//   request(server)
-//     .get('/people/nope')
-//     .expect(404, done);
-//   });
-test('GET people/1/children route', (done) => {
-  request(server)
-    .get('/people/1/children')
-    .expect(200, [], done);
-});
-test('GET people/2/children route', (done) => {
-  request(server)
-    .get('/people/1/children')
-    .expect(200, [{ child_id: 1}, { child_id: 3}], done);
-});
-test('GET people/1/parents route', (done) => {
-  request(server)
-    .get('/people/1/children')
-    .expect(200, [{ parent_id: 2 }, { parent_id: 4 }], done);
-});
-test('GET people/2/parents route', (done) => {
-  request(server)
-    .get('/people/1/children')
-    .expect(200, [{ parent_id: 5 }], done);
-});
-test('GET people/5/parents route', (done) => {
-  request(server)
-    .get('/people/1/children')
-    .expect(200, [], done);
+      }, done);
+    });
+    // test('GET people/999 route => 404', (done) => {
+    //   request(server)
+    //     .get('/people/999')
+    //     .expect(404, done);
+    //   });
+    // test('GET people/nope route => 404', (done) => {
+    //   request(server)
+    //     .get('/people/nope')
+    //     .expect(404, done);
+    //   });
+    test('GET people/1/children route', (done) => {
+      request(server)
+      .get('/people/1/children')
+      .expect(200, [], done);
+    });
+    test('GET people/2/children route', (done) => {
+      request(server)
+      .get('/people/2/children')
+      .expect(200, [{ child_id: 1}, { child_id: 3}], done);
+    });
+    test('GET people/1/parents route', (done) => {
+      request(server)
+      .get('/people/1/parents')
+      .expect(200, [{ parent_id: 2 }, { parent_id: 4 }], done);
+    });
+    test('GET people/2/parents route', (done) => {
+      request(server)
+      .get('/people/2/parents')
+      .expect(200, [{ parent_id: 5 }], done);
+    });
+    test('GET people/5/parents route', (done) => {
+      request(server)
+      .get('/people/5/parents')
+      .expect(200, [], done);
+    });
 });
