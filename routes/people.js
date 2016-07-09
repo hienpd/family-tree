@@ -34,6 +34,7 @@ router.get('/people/:id/children', (req, res, next) => {
   knex('people')
     .join('relationships', 'relationships.child_id', '=', 'people.id')
     .where('parent_id', req.params.id)
+    .select('child_id')
     .then((children) => {
       res.send(children);
     })
@@ -41,5 +42,7 @@ router.get('/people/:id/children', (req, res, next) => {
       next(err);
     });
 });
+
+// GET /people/:id/parents
 
 module.exports = router;
