@@ -4,9 +4,13 @@ exports.up = function(knex) {
   return knex.schema.createTable('relationships', (table) => {
     table.increments();
     table.integer('parent_id')
-      .references('people.id');
+      .references('people.id')
+      .onDelete('cascade')
+      .index();
     table.integer('child_id')
-      .references('people.id');
+      .references('people.id')
+      .onDelete('cascade')
+      .index();
     table.timestamps(true, true);
   })
 };
