@@ -195,27 +195,67 @@ suite('people', () => {
   });
 });
 
-test('GET people route => OK', (done) => {
+test('GET people/2 route', (done) => {
   request(server)
     .get('/people/2')
-    .expect(200, [{
-      "created_at": "2016-07-08T03:33:59.857Z",
-      "dob": "1963-04-20T07:00:00.000Z",
-      "first_name": "Phung",
-      "gender": "f",
-      "id": 2,
-      "last_name": "Dang",
-      "middle_name": "Thi",
-      "updated_at": "2016-07-08T03:33:59.857Z"
-    }], done);
-  });
-test('GET people/999 route => 404', (done) => {
+    .expect(200,
+      {
+        "created_at": "2016-07-08T03:33:59.857Z",
+        "dob": "1963-04-20T07:00:00.000Z",
+        "first_name": "Phung",
+        "gender": "f",
+        "id": 2,
+        "last_name": "Dang",
+        "middle_name": "Thi",
+        "updated_at": "2016-07-08T03:33:59.857Z"
+      }, done);
+});
+test('GET people/15 route', (done) => {
   request(server)
-    .get('/people/999')
-    .expect(404, done);
-  });
-test('GET people/nope route => 404', (done) => {
+    .get('/people/15')
+    .expect(200, {
+        "created_at": "2016-07-08T03:33:59.857Z",
+        "dob": null,
+        "first_name": "Lily",
+        "gender": "f",
+        "id": 15,
+        "last_name": "Saeturn",
+        "middle_name": "",
+        "updated_at": "2016-07-08T03:33:59.857Z"
+    }, done);
+});
+// test('GET people/999 route => 404', (done) => {
+//   request(server)
+//     .get('/people/999')
+//     .expect(404, done);
+//   });
+// test('GET people/nope route => 404', (done) => {
+//   request(server)
+//     .get('/people/nope')
+//     .expect(404, done);
+//   });
+test('GET people/1/children route', (done) => {
   request(server)
-    .get('/people/nope')
-    .expect(404, done);
-  });
+    .get('/people/1/children')
+    .expect(200, [], done);
+});
+test('GET people/2/children route', (done) => {
+  request(server)
+    .get('/people/1/children')
+    .expect(200, [{ child_id: 1}, { child_id: 3}], done);
+});
+test('GET people/1/parents route', (done) => {
+  request(server)
+    .get('/people/1/children')
+    .expect(200, [{ parent_id: 2 }, { parent_id: 4 }], done);
+});
+test('GET people/2/parents route', (done) => {
+  request(server)
+    .get('/people/1/children')
+    .expect(200, [{ parent_id: 5 }], done);
+});
+test('GET people/5/parents route', (done) => {
+  request(server)
+    .get('/people/1/children')
+    .expect(200, [], done);
+});
