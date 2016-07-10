@@ -36,8 +36,6 @@ suite('routes session', () => {
 
     knex('users')
       .insert({
-        first_name: 'John',
-        last_name: 'Siracusa',
         email: 'john.siracusa@gmail.com',
         hashed_password: bcrypt.hashSync(password, 1)
       })
@@ -65,8 +63,6 @@ suite('routes session', () => {
 
     knex('users')
       .insert({
-        first_name: 'John',
-        last_name: 'Siracusa',
         email: 'john.siracusa@gmail.com',
         hashed_password: bcrypt.hashSync(password, 1)
       })
@@ -89,8 +85,6 @@ suite('routes session', () => {
   test('POST /session with bad password', (done) => {
     knex('users')
       .insert({
-        first_name: 'John',
-        last_name: 'Siracusa',
         email: 'john.siracusa@gmail.com',
         hashed_password: bcrypt.hashSync('ilikebigcats', 1)
       })

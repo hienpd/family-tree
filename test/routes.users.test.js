@@ -38,8 +38,6 @@ suite('part3 routes users', () => {
       .post('/users')
       .set('Content-Type', 'application/json')
       .send({
-        first_name: 'John',
-        last_name: 'Siracusa',
         email: 'john.siracusa@gmail.com',
         password: password
       })
@@ -61,8 +59,6 @@ suite('part3 routes users', () => {
             delete user.updated_at;
 
             assert.deepEqual(user, {
-              first_name: 'John',
-              last_name: 'Siracusa',
               email: 'john.siracusa@gmail.com'
             });
 

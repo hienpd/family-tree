@@ -3,12 +3,12 @@
 exports.up = function(knex) {
   return knex.schema.createTable('people', (table) => {
     table.increments();
-    table.string('first_name')
+    table.string('given_name')
       .notNullable()
       .defaultTo('');
     table.string('middle_name')
       .defaultTo('');
-    table.string('last_name')
+    table.string('family_name')
       .notNullable()
       .defaultTo('');
     table.date('dob');

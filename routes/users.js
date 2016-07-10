@@ -8,18 +8,6 @@ const knex = require('../knex');
 router.post('/users', (req, res, next) => {
   const user = req.body;
 
-  if (!user.first_name || user.first_name.trim() === '') {
-    return res
-      .status(400)
-      .set('Content-Type', 'text/plain')
-      .send('First name missing');
-  }
-  if (!user.last_name || user.last_name.trim() === '') {
-    return res
-      .status(400)
-      .set('Content-Type', 'text/plain')
-      .send('Last name missing');
-  }
   if (!user.email || user.email.trim() === '') {
     return res
       .status(400)
@@ -51,8 +39,6 @@ router.post('/users', (req, res, next) => {
   .then((hashed_password) => {
     return knex('users')
     .insert({
-      first_name: user.first_name,  // eslint-disable-line camelcase
-      last_name: user.last_name,    // eslint-disable-line camelcase
       email: user.email,
       hashed_password               // eslint-disable-line camelcase
     })
