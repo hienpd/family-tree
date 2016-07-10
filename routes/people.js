@@ -57,4 +57,14 @@ router.get('/people/:id/parents', (req, res, next) => {
     });
 });
 
+// POST /people
+router.post('/people', (req, res, next) => {
+
+});
+
+// POST /people/c_id/parent/p_id
+router.post('/people/c_id/parent/p_id', (req, res, next) => {
+  
+});
+
 module.exports = router;
