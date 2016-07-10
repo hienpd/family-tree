@@ -193,6 +193,7 @@ suite('people suite', () => {
         "updated_at": "2016-07-08T03:33:59.857Z"
     }], done);
   });
+
   test('GET people/2 route', (done) => {
     request(server)
     .get('/people/2')
@@ -222,39 +223,59 @@ suite('people suite', () => {
         "updated_at": "2016-07-08T03:33:59.857Z"
       }, done);
     });
-    // test('GET people/999 route => 404', (done) => {
-    //   request(server)
-    //     .get('/people/999')
-    //     .expect(404, done);
-    //   });
-    // test('GET people/nope route => 404', (done) => {
-    //   request(server)
-    //     .get('/people/nope')
-    //     .expect(404, done);
-    //   });
+
     test('GET people/1/children route', (done) => {
       request(server)
       .get('/people/1/children')
       .expect(200, [], done);
     });
+
     test('GET people/2/children route', (done) => {
       request(server)
       .get('/people/2/children')
       .expect(200, [{ child_id: 1}, { child_id: 3}], done);
     });
+
     test('GET people/1/parents route', (done) => {
       request(server)
       .get('/people/1/parents')
       .expect(200, [{ parent_id: 2 }, { parent_id: 4 }], done);
     });
+
     test('GET people/2/parents route', (done) => {
       request(server)
       .get('/people/2/parents')
       .expect(200, [{ parent_id: 5 }], done);
     });
+
     test('GET people/5/parents route', (done) => {
       request(server)
       .get('/people/5/parents')
       .expect(200, [], done);
+    });
+
+    test('POST /people', (done) => {
+      request(server)
+        .post('/people')
+        .send({
+          given_name: 'Tina',
+          middle_name: 'Ruth',
+          family_name: 'Belcher',
+          dob: '2003-04-05',
+          gender: 'f'
+        })
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          delete res.body.created_at;
+          delete res.body.updated_at;
+        })
+        .expect(200, {
+          id: 17,
+          given_name: 'Tina',
+          middle_name: 'Ruth',
+          family_name: 'Belcher',
+          dob: '2003-04-05T08:00:00.000Z',
+          gender: 'f'
+        }, done);
     });
 });

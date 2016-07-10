@@ -15,6 +15,8 @@ const cookieSession = require('cookie-session');
 const people = require('./routes/people');
 const users = require('./routes/users');
 const session = require('./routes/session');
+const relationships = require('./routes/relationships');
+
 const app = express();
 module.exports = app;
 
@@ -37,6 +39,7 @@ app.use(express.static(path.join('public')));
 app.use(people);
 app.use(users);
 app.use(session);
+app.use(relationships)
 
 app.use((_req, res) => {
   res.sendStatus(404);

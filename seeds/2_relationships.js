@@ -81,46 +81,52 @@ exports.seed = function(knex) {
         id: 17,
         child_id: 11,
         parent_id: 6
-      },
-      {
-        id: 18,
-        child_id: 12,
-        parent_id: 5
-      },
-      {
-        id: 19,
-        child_id: 12,
-        parent_id: 6
-      },
-      {
-        id: 20,
-        child_id: 14,
-        parent_id: 12
-      },
-      {
-        id: 21,
-        child_id: 14,
-        parent_id: 13
-      },
-      {
-        id: 22,
-        child_id: 15,
-        parent_id: 12
-      },
-      {
-        id: 23,
-        child_id: 15,
-        parent_id: 13
-      },
-      {
-        id: 24,
-        child_id: 16,
-        parent_id: 12
-      },
-      {
-        id: 25,
-        child_id: 16,
-        parent_id: 13
-      }]);
+      }
+      //, {
+      //   id: 18,
+      //   child_id: 12,
+      //   parent_id: 5
+      // },
+      // {
+      //   id: 19,
+      //   child_id: 12,
+      //   parent_id: 6
+      // },
+      // {
+      //   id: 20,
+      //   child_id: 14,
+      //   parent_id: 12
+      // },
+      // {
+      //   id: 21,
+      //   child_id: 14,
+      //   parent_id: 13
+      // },
+      // {
+      //   id: 22,
+      //   child_id: 15,
+      //   parent_id: 12
+      // },
+      // {
+      //   id: 23,
+      //   child_id: 15,
+      //   parent_id: 13
+      // },
+      // {
+      //   id: 24,
+      //   child_id: 16,
+      //   parent_id: 12
+      // },
+      // {
+      //   id: 25,
+      //   child_id: 16,
+      //   parent_id: 13
+      // }
+    ]);
+    })
+    .then(() => {
+      return knex.raw(
+        "SELECT setval('relationships_id_seq', (SELECT MAX(id) FROM relationships));"
+      );
     });
 };

@@ -141,5 +141,10 @@ exports.seed = function(knex) {
         gender: 'm'
       },
     ]);
+    })
+    .then(() => {
+      return knex.raw(
+        "SELECT setval('people_id_seq', (SELECT MAX(id) FROM people));"
+      );
     });
 };

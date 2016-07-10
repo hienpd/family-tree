@@ -59,12 +59,14 @@ router.get('/people/:id/parents', (req, res, next) => {
 
 // POST /people
 router.post('/people', (req, res, next) => {
-
-});
-
-// POST /people/c_id/parent/p_id
-router.post('/people/c_id/parent/p_id', (req, res, next) => {
-  
+  knex('people')
+    .insert(req.body, '*')
+    .then((people) => {
+      res.send(people[0]);
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 module.exports = router;
