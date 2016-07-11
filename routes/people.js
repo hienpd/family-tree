@@ -4,6 +4,8 @@ const express = require('express');
 const router = express.Router();
 const knex = require('../knex');
 const server = require('../server');
+const ev = require('express-validation');
+const validations = require('../validations/people');
 
 // GET /people
 router.get('/people', (_req, res, next) => {
@@ -58,7 +60,7 @@ router.get('/people/:id/parents', (req, res, next) => {
 });
 
 // POST /people
-router.post('/people', (req, res, next) => {
+router.post('/people', ev(validations.post), (req, res, next) => {
   knex('people')
     .insert(req.body, '*')
     .then((people) => {
