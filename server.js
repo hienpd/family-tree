@@ -40,6 +40,13 @@ app.get('/', (_req, res) => {
   res.render('pages/index');
 });
 
+app.get('/register', (_req, res) => {
+  res.render('pages/register');
+});
+
+app.get('/family', (_req, res) => {
+  res.render('pages/family');
+});
 
 app.use(express.static(path.join('public')));
 
