@@ -44,8 +44,8 @@ app.get('/register', (_req, res) => {
   res.render('pages/register');
 });
 
-app.get('/family', (_req, res) => {
-  res.render('pages/family');
+app.get('/tree', (_req, res) => {
+  res.render('pages/tree');
 });
 
 app.use(express.static(path.join('public')));

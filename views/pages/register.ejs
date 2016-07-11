@@ -1,100 +1,97 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <% include ../partials/head.ejs %>
-</head>
+<% include ../partials/head.ejs %>
 
-<body>
-  <header>
-    <nav>
-      <div class="nav-wrapper">
-        <a href="#" class="brand-logo">That Dang Family</a>
+  <body>
 
-    </nav>
-  </header>
+    <header>
+      <nav>
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo">That Dang Family</a>
+        </div>
+      </nav>
+    </header>
 
-  <main>
+    <main>
+      <div class="row">
+        <div class="col s12 m6">
+          <div class="card white darken-1">
+            <div class="card-content black-text">
+              <span class="card-title">Account Info</span>
+              <div class="row">
 
-    <div class="row">
-        <form class="col s12">
-          <div class="row">
-            <div class="input-field col s6">
-              <input id="first_name" type="text" class="validate">
-              <label for="first_name">First Name</label>
-            </div>
-            <div class="input-field col s6">
-              <input id="last_name" type="text" class="validate">
-              <label for="last_name">Last Name</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="input-field col s12">
-              <input disabled value="I am not editable" id="disabled" type="text" class="validate">
-              <label for="disabled">Disabled</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="input-field col s12">
-              <input id="password" type="password" class="validate">
-              <label for="password">Password</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="input-field col s12">
-              <input id="email" type="email" class="validate">
-              <label for="email">Email</label>
-            </div>
-          </div>
-        </form>
-      </div>
-
-    <div class="row">
-      <div class="col s12 m6">
-        <div class="card white darken-1">
-          <div class="card-content black-text">
-            <span class="card-title">Account Info</span>
-            <div class="row">
-
-                <!-- <form class="col s12">
-                  <div class="row"> -->
-                    <div class="input-field col s4">
-                      <input id="given-name" type="text" class="validate">
-                      <label for="given-name">Given Name</label>
-                    </div>
-                    <div class="input-field col s4">
-                      <input id="middle-name" type="text" class="validate">
-                      <label for="middle-name">Middle Name</label>
-                    </div>
-                    <div class="input-field col s4">
-                      <input id="family-name" type="text" class="validate">
-                      <label for="family-name">Family Name</label>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="input-field col s12">
-                      <input id="password" type="password" class="validate">
-                      <label for="password">Password</label>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="input-field col s12">
-                      <input id="email" type="email" class="validate">
-                      <label for="email">Email</label>
-                    </div>
-                  <!-- </div>
-                </form> -->
+                <div class="input-field col s4">
+                  <input id="given-name" type="text" class="validate">
+                  <label for="given-name">Given Name</label>
+                </div>
+                <div class="input-field col s4">
+                  <input id="middle-name" type="text" class="validate">
+                  <label for="middle-name">Middle Name</label>
+                </div>
+                <div class="input-field col s4">
+                  <input id="family-name" type="text" class="validate">
+                  <label for="family-name">Family Name</label>
+                </div>
               </div>
 
+              <div class="row">
+                <div class="input-field col s12">
+                  <input id="email" type="email" class="validate">
+                  <label for="email">Email</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input id="password" type="password" class="validate">
+                  <label for="password">Password</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input id="confirm-password" type="password" class="validate">
+                  <label for="confirm-password">Confirm Password</label>
+                </div>
+              </div>
 
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="date" class="datepicker" id="dob">
+                  <label for="dob">Date of Birth</label>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="input-field col s12">
+                  <select>
+                    <option value="" disabled selected>Gender</option>
+                    <option value="f">Female</option>
+                    <option value="m">Male</option>
+                    <option value="a">Agender</option>
+                    <option value="i">Intersex</option>
+                    <option value="p">Pangender</option>
+                    <option value="t">Transgender/Transsexual</option>
+                    <option value="s">Two-Spirit</option>
+                  </select>
+                  <label>Gender</label>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
 
-  <% include ../partials/footer.ejs %>
-</body>
+    <% include ../partials/footer.ejs %>
+      <script>
+        $('.datepicker').pickadate({
+          selectMonths: true, // Creates a dropdown to control month
+          selectYears: 150 // Creates a dropdown of 15 years to control year
+        });
+        $(document).ready(function() {
+          $('select').material_select();
+        });
+      </script>
+  </body>
 
 </html>
