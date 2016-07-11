@@ -34,7 +34,7 @@ router.get('/people/:id', (req, res, next) => {
 // GET /people/:id/children
 router.get('/people/:id/children', (req, res, next) => {
   knex('people')
-    .join('relationships', 'relationships.child_id', '=', 'people.id')
+    .join('parents_children', 'parents_children.child_id', '=', 'people.id')
     .where('parent_id', req.params.id)
     .select('child_id')
     .then((children) => {
@@ -48,7 +48,7 @@ router.get('/people/:id/children', (req, res, next) => {
 // GET /people/:id/parents
 router.get('/people/:id/parents', (req, res, next) => {
   knex('people')
-    .join('relationships', 'relationships.parent_id', 'people.id')
+    .join('parents_children', 'parents_children.parent_id', 'people.id')
     .where('child_id', req.params.id)
     .select('parent_id')
     .then((parents) => {

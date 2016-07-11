@@ -1,9 +1,9 @@
 'use strict';
 
 exports.seed = function(knex) {
-  return knex('relationships').del()
+  return knex('parents_children').del()
     .then(() => {
-      return knex('relationships').insert([{
+      return knex('parents_children').insert([{
         id: 1,
         child_id: 1,
         parent_id: 2
@@ -126,7 +126,7 @@ exports.seed = function(knex) {
     })
     .then(() => {
       return knex.raw(
-        "SELECT setval('relationships_id_seq', (SELECT MAX(id) FROM relationships));"
+        "SELECT setval('parents_children_id_seq', (SELECT MAX(id) FROM parents_children));"
       );
     });
 };

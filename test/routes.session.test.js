@@ -74,7 +74,7 @@ suite('routes session', () => {
             email: 'bad.email@gmail.com',
             password: password
           })
-          .expect('Content-Type', /plain/)
+          .expect('Content-Type', /text/)
           .expect(401, 'Unauthorized', done);
       })
       .catch((err) => {
@@ -96,7 +96,7 @@ suite('routes session', () => {
             email: 'john.siracusa@gmail.com',
             password: 'badpassword'
           })
-          .expect('Content-Type', /plain/)
+          .expect('Content-Type', /text/)
           .expect(401, 'Unauthorized', done);
       })
       .catch((err) => {

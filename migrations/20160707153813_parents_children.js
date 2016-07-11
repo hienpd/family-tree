@@ -1,7 +1,7 @@
 'use strict';
 
 exports.up = function(knex) {
-  return knex.schema.createTable('relationships', (table) => {
+  return knex.schema.createTable('parents_children', (table) => {
     table.increments();
     table.integer('parent_id')
       .references('people.id')
@@ -16,5 +16,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('relationships');
+  return knex.schema.dropTable('parents_children');
 };

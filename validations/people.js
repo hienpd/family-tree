@@ -20,7 +20,7 @@ module.exports.post = {
       .required()
       .trim(),
     dob: Joi.date()
-      .format('YYYY/MM/DD')
+      .format('YYYY-MM-DD')
       .label('Date of birth in YYYY-MM-DD'),
     gender: Joi.string()
       .max(1)

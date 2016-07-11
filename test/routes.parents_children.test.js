@@ -11,7 +11,7 @@ const knex = require('../knex');
 const request = require('supertest');
 const server = require('../server');
 
-suite('relationships route', () => {
+suite('parents_children route', () => {
   before(function(done) {
     knex.migrate.latest()
       .then(() => {
@@ -32,9 +32,9 @@ suite('relationships route', () => {
       });
   });
 
-  test('POST /relationships', (done) => {
+  test('POST /parents_children', (done) => {
     request(server)
-      .post('/relationships')
+      .post('/parents_children')
       .send({
         parent_id: 12,
         child_id: 14

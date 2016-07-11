@@ -5,14 +5,14 @@ const router = express.Router();
 const knex = require('../knex');
 const server = require('../server');
 const ev = require('express-validation');
-const validations = require('../validations/relationships');
+const validations = require('../validations/parents_children');
 
-// POST /relationships
-router.post('/relationships', ev(validations.post), (req, res, next) => {
-  knex('relationships')
+// POST /parents_children
+router.post('/parents_children', ev(validations.post), (req, res, next) => {
+  knex('parents_children')
     .insert(req.body, '*')
-    .then((relationships) => {
-      res.send(relationships[0]);
+    .then((parents_children) => {
+      res.send(parents_children[0]);
     })
     .catch((err) => {
       next(err);
