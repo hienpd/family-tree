@@ -65,6 +65,7 @@ app.use((_req, res) => {
 
 app.use((err, _req, res, _next) => {
   if (err.status) {
+    console.error(err);
     return res.status(err.status).send(err.message);
   }
 
