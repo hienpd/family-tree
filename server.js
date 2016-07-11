@@ -44,6 +44,10 @@ app.get('/register', (_req, res) => {
   res.render('pages/register');
 });
 
+app.get('/edit', (_req, res) => {
+  res.render('pages/edit');
+});
+
 app.get('/tree', (_req, res) => {
   res.render('pages/tree');
 });
