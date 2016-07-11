@@ -4,8 +4,10 @@ const express = require('express');
 const router = express.Router();  // eslint-disable-line new-cap
 const knex = require('../knex');
 const bcrypt_promise = require('bcrypt-as-promised');
+const ev = require('express-validation');
+const validations = require('../validations/session');
 
-router.post('/session', (req, res, next) => {
+router.post('/session', ev(validations.post), (req, res, next) => {
 // TO DO: add validation
 
   let userId;

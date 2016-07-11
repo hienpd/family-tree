@@ -4,8 +4,10 @@ const express = require('express');
 const router = express.Router(); // eslint-disable-line new-cap
 const bcrypt_promise = require('bcrypt-as-promised');
 const knex = require('../knex');
+const ev = require('express-validation');
+const validations = require('../validations/users');
 
-router.post('/users', (req, res, next) => {
+router.post('/users', ev(validations.post), (req, res, next) => {
   const user = req.body;
 
   if (!user.email || user.email.trim() === '') {
