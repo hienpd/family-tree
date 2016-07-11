@@ -20,6 +20,8 @@ const relationships = require('./routes/relationships');
 const app = express();
 module.exports = app;
 
+app.set('view engine', 'ejs');
+
 app.disable('x-powered-by');
 
 if (process.env.NODE_ENV !== 'test') {
@@ -33,6 +35,11 @@ app.use(cookieSession({
   name: 'family_tree',
   secret: process.env.SESSION_SECRET
 }));
+
+app.get('/', (_req, res) => {
+  res.render('pages/index');
+});
+
 
 app.use(express.static(path.join('public')));
 
