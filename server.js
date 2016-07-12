@@ -58,12 +58,16 @@ app.get('/register', (_req, res) => {
   res.render('pages/register');
 });
 
-app.get('/edit', checkAuth, (_req, res) => {
-  res.render('pages/edit');
-});
-
 app.get('/tree', checkAuth, (_req, res) => {
   res.render('pages/tree');
+});
+
+app.get('/add_self', checkAuth, (_req, res) => {
+  res.render('pages/add_self');
+});
+
+app.get('/add_new', checkAuth, (_req, res) => {
+  res.render('pages/add_new');
 });
 
 app.use(express.static(path.join('public')));
