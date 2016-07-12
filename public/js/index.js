@@ -4,7 +4,13 @@ $('#login').click((event) => {
   const email = $('#login-email').val();
   const password = $('#login-password').val();
 
-  console.log(email, password);
+  if (!email || !email.trim()) {
+    return Materialize.toast('Please enter an email.', 4000);
+  }
+
+  if (!password || !password.trim()) {
+    return Materialize.toast('Please enter a password.', 4000);
+  }
 
   var $xhr = $.ajax({
     method: 'POST',
