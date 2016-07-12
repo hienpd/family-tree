@@ -4,11 +4,7 @@
 
   <body>
     <header>
-      <nav>
-        <div class="nav-wrapper">
-          <a href="#" class="brand-logo">That Dang Family</a>
-
-      </nav>
+      <% include ../partials/nav_logout.ejs %>
     </header>
 
     <main>
@@ -32,12 +28,7 @@
     </main>
 
     <% include ../partials/footer.ejs %>
-    <script>
-    $(document).ready(function(){
-        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-        $('.modal-trigger').leanModal();
-      });
-    </script>
+    <script src="/js/tree.js"></script>
   </body>
 
 </html>

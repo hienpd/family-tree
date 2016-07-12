@@ -53,7 +53,7 @@ app.get('/register', (_req, res) => {
   res.render('pages/register');
 });
 
-app.get('/edit', (_req, res) => {
+app.get('/edit', checkAuth, (_req, res) => {
   res.render('pages/edit');
 });
 
