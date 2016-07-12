@@ -45,8 +45,13 @@ app.use(cookieSession({
   secret: process.env.SESSION_SECRET
 }));
 
-app.get('/', (_req, res) => {
-  res.render('pages/index');
+app.get('/', (req, res) => {
+  if (req.session && req.session.userId) {
+    res.render('pages/tree');
+  }
+  else {
+    res.render('pages/index');
+  }
 });
 
 app.get('/register', (_req, res) => {
