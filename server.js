@@ -17,6 +17,15 @@ const users = require('./routes/users');
 const session = require('./routes/session');
 const parents_children = require('./routes/parents_children');
 
+const checkAuth = function(req, res, next) {
+  if (!req.session.userId) {
+    console.log('You are not allowed!');
+    return res.sendStatus(401);
+  }
+
+  next();
+}
+
 const app = express();
 module.exports = app;
 
@@ -48,7 +57,7 @@ app.get('/edit', (_req, res) => {
   res.render('pages/edit');
 });
 
-app.get('/tree', (_req, res) => {
+app.get('/tree', checkAuth, (_req, res) => {
   res.render('pages/tree');
 });
 
