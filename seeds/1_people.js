@@ -11,7 +11,8 @@ exports.seed = function(knex) {
         dob: new Date(1984, 11, 1),
         created_at: new Date("2016-07-08T03:33:59.857Z"),
         updated_at: new Date("2016-07-08T03:33:59.857Z"),
-        gender: 'f'
+        gender: 'f',
+        user_id: 1
       },
       {
         id: 2,

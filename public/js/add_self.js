@@ -39,13 +39,15 @@ $('#save').click((event) => {
     return Materialize.toast('Maximum number of parents is two!', 4000);
   }
 
+  const userId = Number.parseInt(/family-tree-userId=(\d+)/.exec(document.cookie)[1]);
   const $xhr = $.ajax({
     method: 'POST',
     url: '/people',
     contentType: 'application/json',
     dataType: 'json',
-    data: JSON.stringify({given_name, middle_name, family_name, gender, dob})
+    data: JSON.stringify({given_name, middle_name, family_name, gender, dob, user_id:userId})
   });
+
 
   $xhr.done((data) => {
     console.log(data);

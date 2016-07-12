@@ -28,7 +28,7 @@ router.post('/session', ev(validations.post), (req, res, next) => {
   })
   .then(() => {
     req.session.userId = userId;
-    res.cookie('loggedIn', true);
+    res.cookie('family-tree-userId', userId);
     res.sendStatus(200);
   })
   .catch(bcrypt_promise.MISMATCH_ERROR, () => {
@@ -44,7 +44,7 @@ router.post('/session', ev(validations.post), (req, res, next) => {
 
 router.delete('/session', (req, res) => {
   req.session = null;
-  res.clearCookie('loggedIn');
+  res.clearCookie('family-tree-userId');
   res.sendStatus(200);
 });
 

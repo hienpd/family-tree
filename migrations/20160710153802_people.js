@@ -15,6 +15,7 @@ exports.up = function(knex) {
     table.string('gender')
       .defaultTo('');
     table.timestamps(true, true);
+    table.integer('user_id');
   });
 };
 

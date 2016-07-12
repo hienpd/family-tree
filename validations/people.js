@@ -25,6 +25,8 @@ module.exports.post = {
       .label('Date of birth in YYYY-MM-DD'),
     gender: Joi.string()
       .max(1)
-      .label('Gender')
+      .label('Gender'),
+    user_id: Joi.number()
+      .integer()
   }
 };
