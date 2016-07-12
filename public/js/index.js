@@ -1,3 +1,4 @@
+'use strict';
 
 $('#login').click((event) => {
   const email = $('#login-email').val();

@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="row">
-                  <a class="waves-effect waves-light btn-large">Register</a>
+                  <a id="register" class="waves-effect waves-light btn-large">Register</a>
                 </div>
               </div>
             </div>
@@ -45,15 +45,7 @@
       </div>
       </main>
     <% include ../partials/footer.ejs %>
-      <script>
-        $('.datepicker').pickadate({
-          selectMonths: true, // Creates a dropdown to control month
-          selectYears: 150 // Creates a dropdown of 15 years to control year
-        });
-        $(document).ready(function() {
-          $('select').material_select();
-        });
-      </script>
+      <script src="/js/register.js"></script>
   </body>
 
 </html>

@@ -18,7 +18,7 @@ router.post('/users', ev(validations.post), (req, res, next) => {
   }
   if (!user.password || user.password.trim() === '') {
     return res
-      .status(400)
+      .status(4001)
       .set('Content-Type', 'text/plain')
       .send('Password must not be blank');
   }
@@ -30,7 +30,7 @@ router.post('/users', ev(validations.post), (req, res, next) => {
   .then((exists) => {
     if (exists) {
       return res
-        .status(400)
+        .status(4000)
         .set('Content-Type', 'text/plain')
         .send('Email already exists');
     }
