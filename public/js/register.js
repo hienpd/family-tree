@@ -44,7 +44,7 @@ $('#register').click((event) => {
     });
 
     $xhr.done(function(data) {
-      window.location.href = '/edit';
+      window.location.href = '/add_self';
     });
 
     $xhr.fail(function(err) {
