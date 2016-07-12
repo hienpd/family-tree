@@ -8,6 +8,7 @@ $('#register').click((event) => {
   var $xhr = $.ajax({
     method: 'POST',
     url: '/users',
+    contentType: 'application/json',
     data: JSON.stringify({email: email, password: password})
   });
 

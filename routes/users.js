@@ -35,14 +35,13 @@ router.post('/users', ev(validations.post), (req, res, next) => {
         .send('Email already exists');
     }
 
-    // eslint-disable-next-line camelcase
     return bcrypt_promise.hash(req.body.password, 12);
   })
   .then((hashed_password) => {
     return knex('users')
     .insert({
       email: user.email,
-      hashed_password               // eslint-disable-line camelcase
+      hashed_password
     })
   })
   .then(() => {
