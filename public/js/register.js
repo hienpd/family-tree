@@ -5,21 +5,59 @@ $('#register').click((event) => {
   const password = $('#password').val();
   const confirm_password = $('#confirm-password').val();
 
+  if (!email || !email.trim()) {
+    return Materialize.toast('Please enter an email!', 4000);
+  }
+
+  if ($('#email').hasClass('invalid')) {
+    return Materialize.toast('Email not valid!', 4000);
+  }
+
+  if (!password || !password.trim()) {
+    return Materialize.toast('Please enter a password!', 4000);
+  }
+
+  if (password !== confirm_password) {
+    return Materialize.toast('Passwords do not match!', 4000);
+  }
+
   var $xhr = $.ajax({
     method: 'POST',
     url: '/users',
     contentType: 'application/json',
-    data: JSON.stringify({email: email, password: password})
+    data: JSON.stringify({
+      email: email,
+      password: password
+    })
   });
 
   $xhr.done((data) => {
-    console.log(data);
+    var $xhr = $.ajax({
+      method: 'POST',
+      url: '/session/',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
+
+    $xhr.done(function(data) {
+      window.location.href = '/edit';
+    });
+
+    $xhr.fail(function(err) {
+      Materialize.toast('Unable to log in!', 4000);
+    });
   });
 
   $xhr.fail((err) => {
-    console.log(err);
+    if (err.status === 409) {
+      Materialize.toast('Email already registered! Please log in.', 4000);
+    } else {
+      Materialize.toast('Please enter a valid email address.', 4000);
+    }
   });
-
 });
 
 $('.datepicker').pickadate({

@@ -9,12 +9,12 @@ module.exports.post = {
       .email()
       .label('Email')
       .max(255)
-    //   .required(),
-    // password: Joi.string()
-    //   .trim()
-    //   .label('Password')
-    //   .max(255)
-    //   .required()
-      // .strip()
+      .required(),
+    password: Joi.string()
+      .trim()
+      .label('Password')
+      .max(255)
+      .required()
+      .strip()
   }
 };
