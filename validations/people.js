@@ -11,8 +11,8 @@ module.exports.post = {
       .trim(),
     middle_name: Joi.string()
       .label('Middle name, goes between given name and family name')
+      .allow('')
       .max(255)
-      .required()
       .trim(),
     family_name: Joi.string()
       .label('Family name AKA last name')
@@ -21,6 +21,7 @@ module.exports.post = {
       .trim(),
     dob: Joi.date()
       .format('YYYY-MM-DD')
+      .allow()
       .label('Date of birth in YYYY-MM-DD'),
     gender: Joi.string()
       .max(1)

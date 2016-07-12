@@ -13,7 +13,6 @@ exports.up = function(knex) {
       .defaultTo('');
     table.date('dob');
     table.string('gender')
-      .notNullable()
       .defaultTo('');
     table.timestamps(true, true);
   });

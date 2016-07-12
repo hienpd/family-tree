@@ -8,7 +8,6 @@ var $xhr = $.ajax({
 });
 
 $xhr.done((data) => {
-  console.log(data);
   for (const person of data) {
     $('#choose-parents').append(
       $('<option></option>').val(person.id).html(`${person.given_name} ${person.family_name}`));
@@ -28,26 +27,34 @@ $('#save').click((event) => {
   const gender = $('#gender').val();
   const choose_parents = $('#choose-parents').val();
 
-console.log(given_name);
-
   if (!given_name || !given_name.trim()) {
-    return   Materialize.toast('Please enter a given name AKA first name!', 4000);
+    return Materialize.toast('Please enter a given name AKA first name!', 4000);
   }
 
   if (!family_name || !family_name.trim()) {
-    return   Materialize.toast('Please enter a family name AKA last name!', 4000);
-  }
-
-  if (!dob || !dob.trim()) {
-    return   Materialize.toast('Please enter a date of birth!', 4000);
+    return Materialize.toast('Please enter a family name AKA last name!', 4000);
   }
 
   if (choose_parents.length > 2) {
-    return   Materialize.toast('Maximum number of parents is two!', 4000);
+    return Materialize.toast('Maximum number of parents is two!', 4000);
   }
 
-});
+  const $xhr = $.ajax({
+    method: 'POST',
+    url: '/people',
+    contentType: 'application/json',
+    dataType: 'json',
+    data: JSON.stringify({given_name, middle_name, family_name, gender, dob})
+  });
 
+  $xhr.done((data) => {
+    console.log(data);
+  });
+
+  $xhr.fail((err) => {
+    console.log(err);
+  });
+});
 
 // Logout
 $('#logout').click((event) => {
@@ -72,8 +79,10 @@ $(document).ready(function(){
 
 $('.datepicker').pickadate({
   selectMonths: true, // Creates a dropdown to control month
-  selectYears: 150 // Creates a dropdown of 15 years to control year
+  selectYears: 150, // Creates a dropdown of 15 years to control year
+  format: 'yyyy-mm-dd'
 });
+
 $(document).ready(function() {
   $('select').material_select();
 });
