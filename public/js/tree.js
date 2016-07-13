@@ -6,14 +6,15 @@ const $xhr = $.ajax({
 });
 
 $xhr.done(function(data) {
-  Materialize.toast('success!', 4000);
   for (const person of data) {
-    const name = `${person.id} ${person.given_name} ${person.middle_name} ${person.family_name}`;
-    $('#list').append($(`<li><a class="waves-effect waves-light btn modal-trigger" href="#modal1">${name}</a></li>`));
+    const name = `${person.given_name} ${person.middle_name} ${person.family_name}`;
+    $('#list').append($(`<li data-id="${person.id}">${name}</li>`));
   }
 
   $('#list').on('click', 'li', (event) => {
-    const id = Number.parseInt($(event.target).text());
+    const id = $(event.target).attr('data-id');
+    $('.modal-content').append($(`<h4>ID = ${id}</h4>`))
+    $('#modal1').openModal();
   })
 
 });

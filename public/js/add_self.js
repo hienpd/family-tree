@@ -69,7 +69,6 @@ $('#save').click((event) => {
     const $xhr = $.ajax({
       method: 'POST',
       url: '/parents_children',
-      dataType: 'json',
       contentType: 'application/json',
       data: JSON.stringify(sendToTable)
     });
