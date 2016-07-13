@@ -139,7 +139,27 @@ $xhr.done(function(data) {
             });
 
             $xhr3.done((data) => {
-              $('#modal1').closeModal();
+
+              const $xhr4 = $.ajax({
+                method: 'PATCH',
+                url: '/parents_children/' + person.id,
+                contentType: 'application/json',
+                data: JSON.stringify($('#choose-parents').val().map((parent) => {
+                  return {
+                    parent_id: parent,
+                    child_id: person.id
+                  };
+                }))
+              });
+
+              $xhr4.done((data) => {
+                $('#modal1').closeModal();
+              });
+
+              $xhr4.fail((err) => {
+                Materialize.toast('Parents update failed', 4000);
+                console.log(err);
+              })
             });
 
             $xhr3.fail((err) => {
