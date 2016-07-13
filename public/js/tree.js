@@ -5,6 +5,8 @@ const $xhr = $.ajax({
   url: '/people'
 });
 
+let person;
+
 $xhr.done(function(data) {
   for (const person of data) {
     const name = `${person.given_name} ${person.middle_name} ${person.family_name}`;
@@ -18,7 +20,8 @@ $xhr.done(function(data) {
       url: '/people/' + id
     });
 
-    $xhr.done((person) => {
+    $xhr.done((data) => {
+      person = data;
       let dob = 'n/a';
       if (person.dob) {
         const twoDigit = function (d) {
@@ -65,9 +68,16 @@ $xhr.done(function(data) {
               <option value="s">Two-Spirit</option>
             </select>
             <label>Gender</label>
-        </div>
 
-              `
+          </div>
+        </div>
+        <div class="input-field col s12">
+          <select id="choose-parents" multiple>
+            <option value="" disabled selected>Choose your parents</option>
+          </select>
+          <label>Choose Parents</label>
+        </div>
+`
       ));
 
       $('.datepicker').pickadate({
@@ -77,9 +87,44 @@ $xhr.done(function(data) {
       });
       $(`#edit_gender option[value=${person.gender}]`).prop('selected', true);
       Materialize.updateTextFields();
-      $('select').material_select();
 
-      $('#modal1').openModal();
+      // Populate dropdown menu
+      var $xhr = $.ajax({
+        method: 'GET',
+        url: '/people',
+        dataType: 'json'
+      });
+
+      $xhr.done((data) => {
+        for (const person of data) {
+          $('#choose-parents').append(
+            $('<option></option>').val(person.id).html(`${person.given_name} ${person.family_name}`));
+        }
+
+        const $xhr2 = $.ajax({
+          method: 'GET',
+          url: `/people/${person.id}/parents`
+        })
+
+        $xhr2.done((parents) => {
+          for (const parent of parents) {
+            console.log(parent.parent_id);
+            $(`#choose-parents option[value=${parent.parent_id}]`).prop('selected', true);
+          }
+
+          $('select').material_select();
+          $('#modal1').openModal();
+        });
+
+        $xhr2.fail((err) => {
+          Materialize.toast('Failed getting parents', 4000);
+        })
+      });
+
+      $xhr.fail((err) => {
+        console.log(err);
+      });
+
 
     });
 
