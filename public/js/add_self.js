@@ -57,38 +57,37 @@ $('#save').click((event) => {
 
 
   $xhr.done((data) => {
-      const childId = data.id;
-      if (!choose_parents) {
-        return;
-      }
+    const childId = data.id;
 
-      const sendToTable = choose_parents.map((parent) => {
-        return {parent_id: parent, child_id: childId};
-      });
+    const sendToTable = choose_parents.map((parent) => {
+      return {
+        parent_id: parent,
+        child_id: childId
+      };
+    });
 
-      console.log(sendToTable);
+    const $xhr = $.ajax({
+      method: 'POST',
+      url: '/parents_children',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify(sendToTable)
+    });
 
-      const $xhr = $.ajax({
-        method: 'POST',
-        url: '/parents_children',
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify(sendToTable)
-      });
+    $xhr.done((data) => {
+      window.location.href = 'tree';
+    });
 
-      $xhr.done((data) => {
-        console.log(data);
-      });
-
-      $xhr.fail((err) => {
-        console.log(err);
-      });
-
+    $xhr.fail((err) => {
+      Materialize.toast('Add failed!', 4000);
+      console.log(err);
+    });
   });
 
-$xhr.fail((err) => {
-  console.log(err);
-});
+  $xhr.fail((err) => {
+    Materialize.toast('POST to people table failed!', 4000);
+    console.log(err);
+  });
 });
 
 // Logout
