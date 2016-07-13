@@ -71,4 +71,17 @@ router.post('/people', ev(validations.post), (req, res, next) => {
     });
 });
 
+// PATCH /people/id
+router.patch('/people/:id', ev(validations.patch), (req, res, next) => {
+  knex('people')
+    .where('id', req.params.id)
+    .update(req.body, '*')
+    .then((people) => {
+      res.send(people[0]);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 module.exports = router;

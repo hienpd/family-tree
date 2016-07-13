@@ -71,11 +71,16 @@ $xhr.done(function(data) {
 
           </div>
         </div>
-        <div class="input-field col s12">
-          <select id="choose-parents" multiple>
-            <option value="" disabled selected>Choose your parents</option>
-          </select>
-          <label>Choose Parents</label>
+        <div class="row">
+          <div class="input-field col s12">
+            <select id="choose-parents" multiple>
+              <option value="" disabled selected>Choose your parents</option>
+            </select>
+            <label>Choose Parents</label>
+          </div>
+        </div>
+        <div class="row">
+          <a id="save" class="waves-effect waves-light btn-large">Save</a>
         </div>
 `
       ));
@@ -107,13 +112,27 @@ $xhr.done(function(data) {
         })
 
         $xhr2.done((parents) => {
+
           for (const parent of parents) {
-            console.log(parent.parent_id);
             $(`#choose-parents option[value=${parent.parent_id}]`).prop('selected', true);
           }
 
           $('select').material_select();
           $('#modal1').openModal();
+
+          $('#save').click((event) => {
+            if ($('#choose-parents').val().length > 2) {
+              return Materialize.toast('Maximum number of parents is two!', 4000);
+            }
+            const stuff = {
+              given_name: $('#edit_given_name').val(),
+              middle_name: $('#edit_middle_name').val(),
+              family_name: $('#edit_family_name').val(),
+              dob: $('#edit_dob').val(),
+              gender: $('#edit_gender').val()
+            };
+            console.log(stuff);
+          })
         });
 
         $xhr2.fail((err) => {
@@ -156,8 +175,4 @@ $('#logout').click((event) => {
     Materialize.toast('Unable to log out!', 4000);
     console.err(err);
   });
-});
-
-$(document).ready(function(){
-    $('.modal-trigger').leanModal();
 });
