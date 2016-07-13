@@ -82,6 +82,24 @@ $xhr.done(function(data) {
         <div class="row">
           <a id="save" class="waves-effect waves-light btn-large">Save</a>
         </div>
+        <div class="row">
+        <div class="col s12 m6">
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Invite to Baobab</span>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input id="invite-email" type="email" class="validate">
+                  <label for="invite-email">Email</label>
+                </div>
+              </div>
+            </div>
+            <div class="card-action">
+              <a id="send" class="waves-effect waves-light btn-large">Send invitation</a>
+            </div>
+          </div>
+        </div>
+      </div>
 `
       ));
 
@@ -119,6 +137,32 @@ $xhr.done(function(data) {
 
           $('select').material_select();
           $('#modal1').openModal();
+
+          $('#send').click((event) => {
+            const email = $('#invite-email').val();
+            if (email.length === 0) {
+              Materialize.toast('Please enter email', 4000);
+              return;
+            }
+
+            const $email_xhr = $.ajax({
+              method: 'POST',
+              url: '/email',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                email: email
+              })
+            });
+
+            $email_xhr.done((data) => {
+              Materialize.toast('Invitation sent!', 4000);
+            });
+
+            $email_xhr.fail((err) => {
+              Materialize.toast('Email failed', 4000);
+              console.log(err);
+            })
+          });
 
           $('#save').click((event) => {
             if ($('#choose-parents').val().length > 2) {

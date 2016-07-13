@@ -16,6 +16,7 @@ const people = require('./routes/people');
 const users = require('./routes/users');
 const session = require('./routes/session');
 const parents_children = require('./routes/parents_children');
+const email = require('./routes/email');
 
 const checkAuth = function(req, res, next) {
   if (!req.session.userId) {
@@ -75,7 +76,8 @@ app.use(express.static(path.join('public')));
 app.use(people);
 app.use(users);
 app.use(session);
-app.use(parents_children)
+app.use(parents_children);
+app.use(email);
 
 app.use((_req, res) => {
   res.sendStatus(404);

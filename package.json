@@ -24,7 +24,8 @@
     "joi": "^8.0.5",
     "knex": "^0.11.7",
     "morgan": "^1.7.0",
-    "pg": "^6.0.1"
+    "pg": "^6.0.1",
+    "request-promise": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
