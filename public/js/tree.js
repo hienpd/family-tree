@@ -131,7 +131,21 @@ $xhr.done(function(data) {
               dob: $('#edit_dob').val(),
               gender: $('#edit_gender').val()
             };
-            console.log(stuff);
+            const $xhr3 = $.ajax({
+              method: 'PATCH',
+              url: '/people/' + person.id,
+              contentType: 'application/json',
+              data: JSON.stringify(stuff)
+            });
+
+            $xhr3.done((data) => {
+              $('#modal1').closeModal();
+            });
+
+            $xhr3.fail((err) => {
+              Materialize.toast('Unable to save', 4000);
+              console.log(err);
+            })
           })
         });
 
