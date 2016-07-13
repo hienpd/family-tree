@@ -8,9 +8,13 @@ const $xhr = $.ajax({
 $xhr.done(function(data) {
   Materialize.toast('success!', 4000);
   for (const person of data) {
-    const name = `${person.given_name} ${person.middle_name} ${person.family_name}`;
-    $('#list').append($(`<li>${name}</li>`));
+    const name = `${person.id} ${person.given_name} ${person.middle_name} ${person.family_name}`;
+    $('#list').append($(`<li><a class="waves-effect waves-light btn modal-trigger" href="#modal1">${name}</a></li>`));
   }
+
+  $('#list').on('click', 'li', (event) => {
+    const id = Number.parseInt($(event.target).text());
+  })
 
 });
 
