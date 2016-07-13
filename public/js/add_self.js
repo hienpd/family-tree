@@ -45,17 +45,50 @@ $('#save').click((event) => {
     url: '/people',
     contentType: 'application/json',
     dataType: 'json',
-    data: JSON.stringify({given_name, middle_name, family_name, gender, dob, user_id:userId})
+    data: JSON.stringify({
+      given_name,
+      middle_name,
+      family_name,
+      gender,
+      dob,
+      user_id: userId
+    })
   });
 
 
   $xhr.done((data) => {
-    console.log(data);
+      const childId = data.id;
+      if (!choose_parents) {
+        return;
+      }
+
+      const sendToTable = choose_parents.map((parent) => {
+        return {parent_id: parent, child_id: childId};
+      });
+
+      console.log(sendToTable);
+
+      const $xhr = $.ajax({
+        method: 'POST',
+        url: '/parents_children',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(sendToTable)
+      });
+
+      $xhr.done((data) => {
+        console.log(data);
+      });
+
+      $xhr.fail((err) => {
+        console.log(err);
+      });
+
   });
 
-  $xhr.fail((err) => {
-    console.log(err);
-  });
+$xhr.fail((err) => {
+  console.log(err);
+});
 });
 
 // Logout
@@ -75,8 +108,8 @@ $('#logout').click((event) => {
   });
 });
 
-$(document).ready(function(){
-    $('.modal-trigger').leanModal();
+$(document).ready(function() {
+  $('.modal-trigger').leanModal();
 });
 
 $('.datepicker').pickadate({

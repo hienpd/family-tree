@@ -8,7 +8,7 @@ const ev = require('express-validation');
 const validations = require('../validations/parents_children');
 
 // POST /parents_children
-router.post('/parents_children', ev(validations.post), (req, res, next) => {
+router.post('/parents_children', (req, res, next) => {
   knex('parents_children')
     .insert(req.body, '*')
     .then((parents_children) => {
