@@ -12,8 +12,7 @@ exports.up = function(knex) {
       .notNullable()
       .defaultTo('');
     table.date('dob');
-    table.string('gender')
-      .defaultTo('');
+    table.string('gender');
     table.timestamps(true, true);
     table.integer('user_id');
   });
