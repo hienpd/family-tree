@@ -40,19 +40,22 @@ $('#save').click((event) => {
   }
 
   const userId = Number.parseInt(/family-tree-userId=(\d+)/.exec(document.cookie)[1]);
+  const stuff = {
+    given_name,
+    middle_name,
+    family_name,
+    gender,
+    user_id: userId
+  };
+  if (dob !== '') {
+    stuff.dob = dob;
+  }
   const $xhr = $.ajax({
     method: 'POST',
     url: '/people',
     contentType: 'application/json',
     dataType: 'json',
-    data: JSON.stringify({
-      given_name,
-      middle_name,
-      family_name,
-      gender,
-      dob,
-      user_id: userId
-    })
+    data: JSON.stringify(stuff)
   });
 
 
