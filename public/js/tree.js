@@ -6,7 +6,7 @@ const popUpEditModal = function(event) {
 
   const id = $(event.target).attr('data-id');
 
-  $.ajax({
+  $.ajax({  // GET info for clicked-on id.
     method: 'GET',
     url: '/people/' + id
   })
@@ -101,109 +101,104 @@ const popUpEditModal = function(event) {
     $(`#edit_gender option[value=${person.gender}]`).prop('selected', true);
     Materialize.updateTextFields();
 
-    // Populate dropdown menu
+    // GET parent/child data
     $.ajax({
       method: 'GET',
       url: '/people',
       dataType: 'json'
     })
-    .then((people) => {
+    .then((people) => { // Populate dropdown parent menu
       for (const person of people) {
         $('#choose-parents').append(
           $('<option></option>').val(person.id).html(`${person.given_name} ${person.family_name}`));
       }
 
-      $.ajax({
+      return $.ajax({
         method: 'GET',
         url: `/people/${person.id}/parents`
       })
-      .then((parents) => {
+    })
+    .then((parents) => {
 
-        for (const parent of parents) {
-          $(`#choose-parents option[value=${parent.parent_id}]`).prop('selected', true);
+      for (const parent of parents) {
+        $(`#choose-parents option[value=${parent.parent_id}]`).prop('selected', true);
+      }
+
+      $('select').material_select();
+      $('#modal1').openModal();
+
+      $('#send').click((event) => {
+        const email = $('#invite-email').val();
+        if (email.length === 0) {
+          Materialize.toast('Please enter email', 4000);
+          return;
         }
 
-        $('select').material_select();
-        $('#modal1').openModal();
-
-        $('#send').click((event) => {
-          const email = $('#invite-email').val();
-          if (email.length === 0) {
-            Materialize.toast('Please enter email', 4000);
-            return;
-          }
-
-          $.ajax({
-            method: 'POST',
-            url: '/email',
-            contentType: 'application/json',
-            data: JSON.stringify({
-              email: email
-            })
-          })
-          .then(() => {
-            Materialize.toast('Invitation sent!', 4000);
-          })
-          .catch((err) => {
-            Materialize.toast('Email failed', 4000);
-            console.log(err);
-          })
-        });
-
-        $('#save').click((event) => {
-          if ($('#choose-parents').val().length > 2) {
-            return Materialize.toast('Maximum number of parents is two!', 4000);
-          }
-          const stuff = {
-            given_name: $('#edit_given_name').val(),
-            middle_name: $('#edit_middle_name').val(),
-            family_name: $('#edit_family_name').val(),
-            gender: $('#edit_gender').val()
-          };
-          if ($('#edit_dob').val()) {
-            stuff.dob = $('#edit_dob').val();
-          }
-
-          $.ajax({
-            method: 'PATCH',
-            url: '/people/' + person.id,
-            contentType: 'application/json',
-            data: JSON.stringify(stuff)
-          })
-          .then((data) => {
-
-            return $.ajax({
-              method: 'PATCH',
-              url: '/parents_children/' + person.id,
-              contentType: 'application/json',
-              data: JSON.stringify($('#choose-parents').val().map((parent) => {
-                return {
-                  parent_id: parent,
-                  child_id: person.id
-                };
-              }))
-            });
-          })
-          .then((data) => {
-            $('#modal1').closeModal();
-            loadTreePage();
-          })
-          .catch((err) => {
-            Materialize.toast('Unable to save', 4000);
-            console.log(err);
+        $.ajax({
+          method: 'POST',
+          url: '/email',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            email: email
           })
         })
-      })
-      .catch((err) => {
-        Materialize.toast('Failed getting parents', 4000);
+        .then(() => {
+          Materialize.toast('Invitation sent!', 4000);
+        })
+        .catch((err) => {
+          Materialize.toast('Email failed', 4000);
+          console.log(err);
+        })
+      });
+
+      $('#save').click((event) => {
+        if ($('#choose-parents').val().length > 2) {
+          return Materialize.toast('Maximum number of parents is two!', 4000);
+        }
+        const stuff = {
+          given_name: $('#edit_given_name').val(),
+          middle_name: $('#edit_middle_name').val(),
+          family_name: $('#edit_family_name').val(),
+          gender: $('#edit_gender').val()
+        };
+        if ($('#edit_dob').val()) {
+          stuff.dob = $('#edit_dob').val();
+        }
+
+        $.ajax({
+          method: 'PATCH',
+          url: '/people/' + person.id,
+          contentType: 'application/json',
+          data: JSON.stringify(stuff)
+        })
+        .then((data) => {
+
+          return $.ajax({
+            method: 'PATCH',
+            url: '/parents_children/' + person.id,
+            contentType: 'application/json',
+            data: JSON.stringify($('#choose-parents').val().map((parent) => {
+              return {
+                parent_id: parent,
+                child_id: person.id
+              };
+            }))
+          });
+        })
+        .then((data) => {
+          $('#modal1').closeModal();
+          loadTreePage();
+        })
+        .catch((err) => {
+          Materialize.toast('Unable to save', 4000);
+          console.log(err);
+        })
       })
     })
     .catch((err) => {
       Materialize.toast('Unable to fetch people', 4000);
       console.log(err);
     });
-
-
   })
   .catch((err) => {
     Materialize.toast('Unable to edit', 4000);
