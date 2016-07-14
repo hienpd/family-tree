@@ -217,10 +217,11 @@ canvas.width = 1200;
 canvas.height = 500;
 ctx.translate(0, 10);
 
-$('.tree-div').on('click', 'div.edit', popUpEditModal);
+$('.tree-div').on('click', 'a.edit', popUpEditModal);
 
 function drawNode(name, id, x, y) {
-  $('.tree-div').append($(`<div class="node">${name} ${id}<div class="edit" data-id="${id}">Edit</div></div>`).css({left: (x + 1) * g_w - 50, top: (y + 0) * g_h - 50}));
+  // $('.tree-div').append($(`<div class="node">${name} ${id}<div class="edit" data-id="${id}">Edit</div></div>`).css({left: (x + 1) * g_w - 50, top: (y + 0) * g_h - 50}));
+  $('.tree-div').append($(`<div class="node">${name} ${id}<a class="edit btn-floating yellow" data-id="${id}"><i class="tiny material-icons">mode_edit</i></a></div>`).css({left: (x + 1) * g_w - 50, top: (y + 0) * g_h - 50}));
 }
 
 function drawLine(a) {

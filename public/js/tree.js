@@ -4,7 +4,7 @@ let person;
 
 const popUpEditModal = function(event) {
 
-  const id = $(event.target).attr('data-id');
+  const id = $(event.currentTarget).attr('data-id');
 
   $.ajax({  // GET info for clicked-on id.
     method: 'GET',
