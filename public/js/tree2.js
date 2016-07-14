@@ -1,9 +1,7 @@
 const canvas = $('#canvas')[0];
 const ctx = canvas.getContext('2d');
-const g_w = 120;
-const g_h = 50;
-const n = 13;
-
+const g_w = 150;
+const g_h = 150;
 
 let persons;
 let parent_rels;
@@ -113,7 +111,6 @@ function findTop(d, id) {
 }
 
 function descend(generation) {
-  console.log('gen', generation);
   for (let i=0; i<generation.length; ++i) {
     const ms = matesOf(generation[i].id);
     let children;
@@ -145,29 +142,95 @@ function descend(generation) {
   return generation;
 }
 
+function computeWidth(children) {
+  let width = 0;
+  for (const child of children) {
+    if (child.r_id === undefined) { // no mates => no children
+      child.width = 1;
+      width += child.width;
+    } else if (child.l_id === undefined) { // one mate (on right)
+      child.width = Math.max(2, computeWidth(child.children));
+      width += child.width;
+    } else {  // two mates
+      child.l_width = Math.max(2, computeWidth(child.l_children));
+      child.r_width = Math.max(2, computeWidth(child.r_children));
+      width += child.l_width + child.r_width;
+    }
+  }
+  return width;
+}
 
 function drawTree() {
-  console.log('res', descend([{id: 2}]));
+  const t = [{id: 5}];
+  descend(t);
+  computeWidth(t);
+  drawSubtree(t, 0, 0);
+
+  function drawSubtree(t, left, level, parentx, parenty) {
+    for (const n of t) {
+      const p = personsById[n.id];
+      if (n.r_id === undefined) { // single node
+        drawJoin(parentx, parenty, left, level);
+        drawNode(p.given_name + ' ' + p.family_name, p.id, left, level);
+        left += n.width;
+      } else if (n.l_id === undefined) { // double node (one mate)
+        drawJoin(parentx, parenty, left, level);
+        drawLine([left, level, left+1, level]);
+        drawNode(p.given_name + ' ' + p.family_name, p.id, left, level);
+        const p_r = personsById[n.r_id];
+        drawNode(p_r.given_name + ' ' + p_r.family_name, p_r.id, left + 1, level);
+        drawSubtree(n.children, left, level + 1, left + 0.5, level);
+        left += n.width;
+      } else { // triple node (two mates)
+        const p_r = personsById[n.r_id];
+        const p_l = personsById[n.l_id];
+        const xl = (n.l_width - 1) / 2;
+        const xr = (n.r_width - 1) / 2 + n.l_width;
+        const xm = (xl + xr) / 2;
+        drawLine([xl - 0.5, level, xr + 0.5, level]);
+        drawJoin(parentx, parenty, xm, level);
+        drawNode(p.given_name + ' ' + p.family_name, p.id, xm, level);
+        drawNode(p_r.given_name + ' ' + p_r.family_name, p_r.id, xr + 0.5, level);
+        drawNode(p_l.given_name + ' ' + p_l.family_name, p_l.id, xl - 0.5, level);
+        drawSubtree(n.l_children, left, level + 1, xl, level);
+        left += n.l_width;
+        drawSubtree(n.r_children, left, level + 1, xr, level);
+        left += n.r_width;
+      }
+    }
+  }
+}
+
+function drawJoin(parentx, parenty, x, y) {
+  if (parentx === undefined) {
+    return;
+  }
+  const midy = (parenty + y) / 2;
+  drawLine([parentx, parenty, parentx, midy, x, midy, x, y]);
 }
 
 
-
-
-canvas.width = (n-0.5) * g_w;
-canvas.height = (n - 0.5) * g_h;
-for (let i=0; i<n; ++i) {
-  ctx.moveTo(0, i*g_h);
-  ctx.lineTo(n*g_w, i*g_h);
-  ctx.stroke();
-  ctx.moveTo(i*g_w, 0);
-  ctx.lineTo(i*g_w, n*g_h);
-  ctx.stroke();
-}
+canvas.width = 1200;
+canvas.height = 500;
+ctx.translate(0, 10);
 
 $('.main-div').on('click', 'div.edit', (event) => {
   alert($(event.target).attr('data-id'));
 })
 
+
 function drawNode(name, id, x, y) {
-  $('.main-div').append($(`<div class="node">${name}<div class="edit" data-id="${id}">Edit</div></div>`).css({left: x-50, top:y-50}));
+  $('.main-div').append($(`<div class="node">${name} ${id}<div class="edit" data-id="${id}">Edit</div></div>`).css({left: (x + 1) * g_w - 50, top: (y + 0) * g_h - 50}));
+}
+
+function drawLine(a) {
+  ctx.strokeStyle = 'pink';
+  ctx.lineWidth = 6;
+  ctx.moveTo((a[0] + 1) * g_w, (a[1] + 0) * g_h);
+  a.splice(0, 2);
+  while (a.length) {
+    ctx.lineTo((a[0] + 1) * g_w, (a[1] + 0) * g_h);
+    a.splice(0, 2);
+  }
+  ctx.stroke();
 }
