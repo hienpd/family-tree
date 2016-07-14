@@ -63,3 +63,21 @@ footer.page-footer {
   color: #fff;
   background-color: #EAC435;
 }
+
+#logo-hero {
+  max-width: 400px;
+  max-height: 200px;
+}
+
+#card-hero {
+  background-color: rgba(255, 255, 255, 0.85)
+}
+
+.input-field .prefix.active {
+  color: #EAC435;
+}
+
+.input-field .prefix ~ input,
+.input-field .prefix ~ textarea {
+  margin-left: 0.5rem;
+}
