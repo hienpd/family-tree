@@ -2,10 +2,16 @@ body {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-  background-image: url('/img/leaves.jpeg');
+  background-image: url('/img/baobab_home.png');
   background-size: cover;
 }
 
 main {
   flex: 1 0 auto;
+}
+
+#nav-logo {
+  max-width: 300px;
+  max-height: 65px;
+  margin-left: 30px;
 }
