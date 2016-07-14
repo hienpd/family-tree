@@ -22,7 +22,7 @@ $xhr.done(function(data) {
 
     $xhr.done((data) => {
       person = data;
-      let dob = 'n/a';
+      let dob = '';
       if (person.dob) {
         const twoDigit = function (d) {
           return ('0' + d).slice(-2);
@@ -172,19 +172,21 @@ $xhr.done(function(data) {
               given_name: $('#edit_given_name').val(),
               middle_name: $('#edit_middle_name').val(),
               family_name: $('#edit_family_name').val(),
-              dob: $('#edit_dob').val(),
               gender: $('#edit_gender').val()
             };
-            const $xhr3 = $.ajax({
+            if ($('#edit_dob').val()) {
+              stuff.dob = $('#edit_dob').val();
+            }
+
+            $.ajax({
               method: 'PATCH',
               url: '/people/' + person.id,
               contentType: 'application/json',
               data: JSON.stringify(stuff)
-            });
+            })
+            .then((data) => {
 
-            $xhr3.done((data) => {
-
-              const $xhr4 = $.ajax({
+              return $.ajax({
                 method: 'PATCH',
                 url: '/parents_children/' + person.id,
                 contentType: 'application/json',
@@ -195,18 +197,11 @@ $xhr.done(function(data) {
                   };
                 }))
               });
-
-              $xhr4.done((data) => {
-                $('#modal1').closeModal();
-              });
-
-              $xhr4.fail((err) => {
-                Materialize.toast('Parents update failed', 4000);
-                console.log(err);
-              })
-            });
-
-            $xhr3.fail((err) => {
+            })
+            .then((data) => {
+              $('#modal1').closeModal();
+            })
+            .catch((err) => {
               Materialize.toast('Unable to save', 4000);
               console.log(err);
             })
@@ -243,13 +238,11 @@ $('#logout').click((event) => {
   var $xhr = $.ajax({
     method: 'DELETE',
     url: '/session'
-  });
-
-  $xhr.done(function() {
+  })
+  .then(function() {
     window.location.href = '/';
-  });
-
-  $xhr.fail(function(err) {
+  })
+  .catch(function(err) {
     Materialize.toast('Unable to log out!', 4000);
     console.err(err);
   });
