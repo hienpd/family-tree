@@ -48,7 +48,7 @@ app.use(cookieSession({
 
 app.get('/', (req, res) => {
   if (req.session && req.session.userId) {
-    res.render('pages/tree');
+    res.render('pages/tree', {email: req.session.email});
   }
   else {
     res.render('pages/index');
