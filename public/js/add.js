@@ -30,20 +30,18 @@ if (!isSelf) {
       return;
     }
 
-    const $email_xhr = $.ajax({
+    $.ajax({
       method: 'POST',
       url: '/email',
       contentType: 'application/json',
       data: JSON.stringify({
         email: email
       })
-    });
-
-    $email_xhr.done((data) => {
+    })
+    .then((data) => {
       Materialize.toast('Invitation sent!', 4000);
-    });
-
-    $email_xhr.fail((err) => {
+    })
+    .done((err) => {
       Materialize.toast('Email failed', 4000);
       console.log(err);
     })
@@ -106,16 +104,15 @@ $('#save').click((event) => {
   if (dob !== '') {
     stuff.dob = dob;
   }
-  const $xhr = $.ajax({
+
+  $.ajax({
     method: 'POST',
     url: '/people',
     contentType: 'application/json',
     dataType: 'json',
     data: JSON.stringify(stuff)
-  });
-
-
-  $xhr.done((data) => {
+  })
+  .then((data) => {
     const childId = data.id;
 
     const sendToTable = choose_parents.map((parent) => {
@@ -125,25 +122,18 @@ $('#save').click((event) => {
       };
     });
 
-    const $xhr = $.ajax({
+    return $.ajax({
       method: 'POST',
       url: '/parents_children',
       contentType: 'application/json',
       data: JSON.stringify(sendToTable)
     });
-
-    $xhr.done((data) => {
+  })
+  .then(() => {
       window.location.href = 'tree';
-    });
-
-    $xhr.fail((err) => {
-      Materialize.toast('Add failed!', 4000);
-      console.log(err);
-    });
-  });
-
-  $xhr.fail((err) => {
-    Materialize.toast('POST to people table failed!', 4000);
+  })
+  .catch((err) => {
+    Materialize.toast('Unable to save!', 4000);
     console.log(err);
   });
 });
