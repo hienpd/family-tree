@@ -1,5 +1,57 @@
 'use strict';
 
+if (!isSelf) {
+  const card = `
+  <div class="row">
+  <div class="col s12 m6">
+    <div class="card blue-grey darken-1">
+      <div class="card-content white-text">
+        <span class="card-title">Invite to Baobab</span>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="invite-email" type="email" class="validate">
+            <label for="invite-email">Email</label>
+          </div>
+        </div>
+      </div>
+      <div class="card-action">
+        <a id="send" class="waves-effect waves-light btn-large">Send invitation</a>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+  $('#email-div').empty().append($(card));
+
+  $('#send').click((event) => {
+    const email = $('#invite-email').val();
+    if (email.length === 0) {
+      Materialize.toast('Please enter email', 4000);
+      return;
+    }
+
+    const $email_xhr = $.ajax({
+      method: 'POST',
+      url: '/email',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        email: email
+      })
+    });
+
+    $email_xhr.done((data) => {
+      Materialize.toast('Invitation sent!', 4000);
+    });
+
+    $email_xhr.fail((err) => {
+      Materialize.toast('Email failed', 4000);
+      console.log(err);
+    })
+  });
+
+}
+
+
 // Populate dropdown menu
 var $xhr = $.ajax({
   method: 'GET',
@@ -50,7 +102,7 @@ $('#save').click((event) => {
   if (isSelf) {
     stuff.user_id = userId;
   }
-  
+
   if (dob !== '') {
     stuff.dob = dob;
   }
