@@ -46,7 +46,7 @@ function initData(persons, parent_rels) {
 
   // init materix
   materix = [];
-  for (let i=0; i<20; ++i) { // some # > max id
+  for (let i=0; i<30; ++i) { // some # > max id
     materix.push([]);
   }
 
@@ -64,7 +64,7 @@ function initData(persons, parent_rels) {
 function matesOf(id) {
   id = +id;
   const res = [];
-  for (let j=0; j<20; ++j) {
+  for (let j=0; j<30; ++j) {
     if (materix[id][j]) {
       res.push(j);
     }
@@ -165,16 +165,24 @@ function drawTree() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const t = [{id: 1}];
+  const t = [{id: 18}];
   descend(t);
   computeWidth(t);
-  console.log(t.width);
   let maxLevel = 0;
   const drawnIds = [];
   drawSubtree(t, 0, 0, undefined, undefined, t.width);
 
+  let x = 0;
+  let y = maxLevel + 1;
+  for (const p of persons) {
+    if (drawnIds.indexOf(p.id) >= 0) {
+      continue;
+    }
+    drawNode(`${p.given_name} ${p.family_name}`, p.id, x++, y);
+  }
+
+
   function drawSubtree(t, left, level, parentx, parenty, parentw) {
-console.log(left, level);
     if (level > maxLevel) {
       maxLevel = level;
     }
