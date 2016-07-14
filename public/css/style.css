@@ -15,3 +15,35 @@ main {
   max-height: 65px;
   margin-left: 30px;
 }
+
+.tree-div {
+  position: relative;
+  margin-top: 6rem;
+  width: 100%;
+}
+
+.node {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: #00a5be;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: white;
+  padding: 10px;
+}
+
+.node .edit {
+  position: absolute;
+  width: 40px;
+  height: 25px;
+  left: 70px;
+  top: 80px;
+  background: #eac435;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

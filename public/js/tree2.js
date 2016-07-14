@@ -6,7 +6,7 @@ const g_h = 150;
 let persons;
 let parent_rels;
 
-const loadPage = function () {
+const loadTreePage = function () {
 
   $.ajax({
     method: 'GET',
@@ -33,7 +33,7 @@ const loadPage = function () {
   });
 };
 
-loadPage();
+loadTreePage();
 
 let personsById;
 let materix;
@@ -161,6 +161,9 @@ function computeWidth(children) {
 }
 
 function drawTree() {
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   const t = [{id: 5}];
   descend(t);
   computeWidth(t);
@@ -214,17 +217,14 @@ canvas.width = 1200;
 canvas.height = 500;
 ctx.translate(0, 10);
 
-$('.main-div').on('click', 'div.edit', (event) => {
-  alert($(event.target).attr('data-id'));
-})
-
+$('.tree-div').on('click', 'div.edit', popUpEditModal);
 
 function drawNode(name, id, x, y) {
-  $('.main-div').append($(`<div class="node">${name} ${id}<div class="edit" data-id="${id}">Edit</div></div>`).css({left: (x + 1) * g_w - 50, top: (y + 0) * g_h - 50}));
+  $('.tree-div').append($(`<div class="node">${name} ${id}<div class="edit" data-id="${id}">Edit</div></div>`).css({left: (x + 1) * g_w - 50, top: (y + 0) * g_h - 50}));
 }
 
 function drawLine(a) {
-  ctx.strokeStyle = 'pink';
+  ctx.strokeStyle = '#fb4d3d';
   ctx.lineWidth = 6;
   ctx.moveTo((a[0] + 1) * g_w, (a[1] + 0) * g_h);
   a.splice(0, 2);
