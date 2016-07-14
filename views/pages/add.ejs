@@ -70,7 +70,10 @@
     </main>
 
     <% include ../partials/footer.ejs %>
-    <script src=<%=script%>></script>
+    <script>
+    const isSelf = <%= isSelf %>;
+    </script>
+    <script src="/js/add.js"></script>
   </body>
 
 </html>

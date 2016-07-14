@@ -64,11 +64,11 @@ app.get('/tree', checkAuth, (_req, res) => {
 });
 
 app.get('/add_self', checkAuth, (_req, res) => {
-  res.render('pages/add', {title: 'Add Yourself', script: '/js/add_self.js'});
+  res.render('pages/add', {title: 'Add Yourself', isSelf: true});
 });
 
 app.get('/add_new', checkAuth, (_req, res) => {
-  res.render('pages/add', {title: 'Add New Family Member', script: '/js/add_new.js'});
+  res.render('pages/add', {title: 'Add New Family Member', isSelf: false});
 });
 
 app.use(express.static(path.join('public')));

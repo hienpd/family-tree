@@ -44,9 +44,13 @@ $('#save').click((event) => {
     given_name,
     middle_name,
     family_name,
-    gender,
-    user_id: userId
+    gender
   };
+
+  if (isSelf) {
+    stuff.user_id = userId;
+  }
+  
   if (dob !== '') {
     stuff.dob = dob;
   }
