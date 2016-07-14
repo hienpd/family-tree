@@ -55,20 +55,20 @@ app.get('/', (req, res) => {
   }
 });
 
-app.get('/register', (_req, res) => {
+app.get('/register', (req, res) => {
   res.render('pages/register');
 });
 
-app.get('/tree', checkAuth, (_req, res) => {
-  res.render('pages/tree');
+app.get('/tree', checkAuth, (req, res) => {
+  res.render('pages/tree', {email: req.session.email});
 });
 
-app.get('/add_self', checkAuth, (_req, res) => {
-  res.render('pages/add', {title: 'Add Yourself', isSelf: true});
+app.get('/add_self', checkAuth, (req, res) => {
+  res.render('pages/add', {email: req.session.email, title: 'Add Yourself', isSelf: true});
 });
 
-app.get('/add_new', checkAuth, (_req, res) => {
-  res.render('pages/add', {title: 'Add New Family Member', isSelf: false});
+app.get('/add_new', checkAuth, (req, res) => {
+  res.render('pages/add', {email: req.session.email, title: 'Add New Family Member', isSelf: false});
 });
 
 app.use(express.static(path.join('public')));

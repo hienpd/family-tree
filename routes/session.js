@@ -28,6 +28,7 @@ router.post('/session', ev(validations.post), (req, res, next) => {
   })
   .then(() => {
     req.session.userId = userId;
+    req.session.email = req.body.email;
     res.cookie('family-tree-userId', userId);
     res.sendStatus(200);
   })
