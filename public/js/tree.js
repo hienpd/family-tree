@@ -1,5 +1,7 @@
 'use strict';
 
+let person;
+
 const popUpEditModal = function(event) {
 
   const id = $(event.target).attr('data-id');
@@ -188,6 +190,7 @@ const popUpEditModal = function(event) {
           })
           .then((data) => {
             $('#modal1').closeModal();
+            loadTreePage();
           })
           .catch((err) => {
             Materialize.toast('Unable to save', 4000);
@@ -212,30 +215,26 @@ const popUpEditModal = function(event) {
   });
 }
 
+function loadTreePage() {
+  const $xhr = $.ajax({
+    method: 'GET',
+    url: '/people'
+  })
+  .then((data) => {
+    for (const person of data) {
+      const name = `${person.given_name} ${person.middle_name} ${person.family_name}`;
+      $('#list').append($(`<li>${name} <a data-id="${person.id}">Edit</a></li>`));
+    }
 
-const $xhr = $.ajax({
-  method: 'GET',
-  url: '/people'
-});
+    $('#list').on('click', 'a', popUpEditModal);
+  })
+  .catch((err) => {
+    Materialize.toast('Unable to draw family tree!', 4000);
+    console.err(err);
+  });
+}
 
-let person;
-
-
-$xhr.done(function(data) {
-  for (const person of data) {
-    const name = `${person.given_name} ${person.middle_name} ${person.family_name}`;
-    $('#list').append($(`<li>${name} <a data-id="${person.id}">Edit</a></li>`));
-  }
-
-  $('#list').on('click', 'a', popUpEditModal);
-});
-
-$xhr.fail(function(err) {
-  Materialize.toast('fail!', 4000);
-  console.err(err);
-});
-
-
+loadTreePage();
 
 $('#logout').click((event) => {
   var $xhr = $.ajax({
