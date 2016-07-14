@@ -16,10 +16,15 @@ main {
   margin-left: 30px;
 }
 
+#add-button {
+  margin-left: 40px;
+}
+
 .tree-div {
   position: relative;
-  margin-top: 6rem;
+  margin-top: 3rem;
   width: 100%;
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .node {
@@ -39,8 +44,8 @@ main {
   position: absolute;
   /*width: 40px;
   height: 25px;*/
-  left: 70px;
-  top: 80px;
+  left: 60px;
+  top: 70px;
   background: #eac435;
   display: flex;
   align-items: center;

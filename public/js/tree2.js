@@ -165,7 +165,7 @@ function drawTree() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const t = [{id: 5}];
+  const t = [{id: 1}];
   descend(t);
   computeWidth(t);
   let maxLevel = 0;
@@ -240,8 +240,8 @@ function drawJoin(parentx, parenty, x, y) {
 }
 
 
-canvas.width = 1200;
-canvas.height = 500;
+canvas.width = 1440;
+canvas.height = 600;
 ctx.translate(0, 10);
 
 $('.tree-div').on('click', 'a.edit', popUpEditModal);
