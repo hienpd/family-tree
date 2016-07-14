@@ -95,31 +95,29 @@ const popUpEditModal = function(event) {
 
     $('.datepicker').pickadate({
       selectMonths: true, // Creates a dropdown to control month
-      selectYears: 150, // Creates a dropdown of 15 years to control year
+      selectYears: 150, // Creates a dropdown of 150 years to control year
       format: 'yyyy-mm-dd'
     });
     $(`#edit_gender option[value=${person.gender}]`).prop('selected', true);
     Materialize.updateTextFields();
 
     // Populate dropdown menu
-    var $xhr = $.ajax({
+    $.ajax({
       method: 'GET',
       url: '/people',
       dataType: 'json'
-    });
-
-    $xhr.done((data) => {
-      for (const person of data) {
+    })
+    .then((people) => {
+      for (const person of people) {
         $('#choose-parents').append(
           $('<option></option>').val(person.id).html(`${person.given_name} ${person.family_name}`));
       }
 
-      const $xhr2 = $.ajax({
+      $.ajax({
         method: 'GET',
         url: `/people/${person.id}/parents`
       })
-
-      $xhr2.done((parents) => {
+      .then((parents) => {
 
         for (const parent of parents) {
           $(`#choose-parents option[value=${parent.parent_id}]`).prop('selected', true);
@@ -135,20 +133,18 @@ const popUpEditModal = function(event) {
             return;
           }
 
-          const $email_xhr = $.ajax({
+          $.ajax({
             method: 'POST',
             url: '/email',
             contentType: 'application/json',
             data: JSON.stringify({
               email: email
             })
-          });
-
-          $email_xhr.done((data) => {
+          })
+          .then(() => {
             Materialize.toast('Invitation sent!', 4000);
-          });
-
-          $email_xhr.fail((err) => {
+          })
+          .catch((err) => {
             Materialize.toast('Email failed', 4000);
             console.log(err);
           })
@@ -197,14 +193,13 @@ const popUpEditModal = function(event) {
             console.log(err);
           })
         })
-      });
-
-      $xhr2.fail((err) => {
+      })
+      .catch((err) => {
         Materialize.toast('Failed getting parents', 4000);
       })
-    });
-
-    $xhr.fail((err) => {
+    })
+    .catch((err) => {
+      Materialize.toast('Unable to fetch people', 4000);
       console.log(err);
     });
 
@@ -221,6 +216,7 @@ function loadTreePage() {
     url: '/people'
   })
   .then((data) => {
+    $('#list').empty();
     for (const person of data) {
       const name = `${person.given_name} ${person.middle_name} ${person.family_name}`;
       $('#list').append($(`<li>${name} <a data-id="${person.id}">Edit</a></li>`));
