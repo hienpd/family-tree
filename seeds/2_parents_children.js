@@ -21,6 +21,7 @@ exports.seed = function(knex) {
       {
         id: 4,
         child_id: 2,
+        parent_id: 16 // TEST
       },
       {
         id: 5,
