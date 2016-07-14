@@ -63,6 +63,10 @@ app.get('/tree', checkAuth, (req, res) => {
   res.render('pages/tree', {email: req.session.email});
 });
 
+app.get('/tree2', checkAuth, (req, res) => {
+  res.render('pages/tree2', {email: req.session.email});
+});
+
 app.get('/add_self', checkAuth, (req, res) => {
   res.render('pages/add', {email: req.session.email, title: 'Add Yourself', isSelf: true});
 });

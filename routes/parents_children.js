@@ -19,6 +19,17 @@ router.post('/parents_children', (req, res, next) => {
     });
 });
 
+// GET /parents_children
+router.get('/parents_children', (req, res, next) => {
+  knex('parents_children')
+    .then((parents_children) => {
+      res.send(parents_children);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 // PATCH /parents_children/c_id
 router.patch('/parents_children/:c_id', (req, res, next) => {
   knex('parents_children')
