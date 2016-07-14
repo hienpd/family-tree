@@ -168,13 +168,13 @@ function drawTree() {
   const t = [{id: 1}];
   descend(t);
   computeWidth(t);
+  console.log(t.width);
   let maxLevel = 0;
   const drawnIds = [];
-  drawSubtree(t, 0, 0, undefined, undefined, 8);
-  console.log(maxLevel, drawnIds.length);;;
+  drawSubtree(t, 0, 0, undefined, undefined, t.width);
 
   function drawSubtree(t, left, level, parentx, parenty, parentw) {
-
+console.log(left, level);
     if (level > maxLevel) {
       maxLevel = level;
     }
@@ -189,7 +189,6 @@ function drawTree() {
         actualw += (n.l_width + n.r_width) / 2 + 1;
       }
     }
-    console.log(parentw, actualw);
     const offset = (parentw - actualw) / 2;
     for (const n of t) {
       const p = personsById[n.id];
@@ -206,7 +205,7 @@ function drawTree() {
         const p_r = personsById[n.r_id];
         drawNode(p_r.given_name + ' ' + p_r.family_name, p_r.id, left + offset + 1, level);
         drawnIds.push(p_r.id);
-        drawSubtree(n.children, left, level + 1, left + offset + 0.5, level, parentw);
+        drawSubtree(n.children, left, level + 1, left + offset + 0.5, level, n.width);
         left += n.width;
       } else { // triple node (two mates)
         const p_r = personsById[n.r_id];
@@ -241,7 +240,7 @@ function drawJoin(parentx, parenty, x, y) {
 
 
 canvas.width = 1440;
-canvas.height = 600;
+canvas.height = 550;
 ctx.translate(0, 10);
 
 $('.tree-div').on('click', 'a.edit', popUpEditModal);
