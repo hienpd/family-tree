@@ -86,3 +86,7 @@ footer.page-footer {
 .input-field .prefix ~ textarea {
   margin-left: 0.5rem;
 }
+
+.btn:hover, .btn-large:hover {
+  background-color: #EAC435;
+}
