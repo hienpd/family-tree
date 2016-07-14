@@ -11,7 +11,6 @@ router.post('/email', (req, res, next) => {
       body: {
           From: 'baobab@kenmcgrady.com',
           To: req.body.email,
-          Cc: 'thatmichaelpark@gmail.com',
           Subject: 'You\'ve been invited to Baobab!',
           TextBody: 'Dude. Plz reply.'
       },
@@ -32,18 +31,3 @@ router.post('/email', (req, res, next) => {
     });
 
 module.exports = router;
-
-/*
-method: 'POST',
-url: 'https://api.postmarkapp.com/email',
-dataType: 'application/json',
-contentType: 'application/json',
-headers: {
-  'X-Postmark-Account-Token': '610e7308-e078-4498-ae1a-a79d7a9dfbf2'
-  // 'X-Postmark-Server-Token': '76b40eca-7358-459b-8658-217bad4f9eb4'
-},
-data: {
-}
-
-
-*/
