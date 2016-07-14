@@ -47,3 +47,19 @@ main {
   justify-content: center;
   cursor: pointer;
 }
+
+nav {
+  background-color: #345995;
+  height: 65px;
+  line-height: 65px;
+}
+
+footer.page-footer {
+  padding-bottom: 20px;
+  background-color: #345995;
+}
+
+.btn, .btn-large {
+  color: #fff;
+  background-color: #EAC435;
+}
