@@ -3,23 +3,23 @@
 if (!isSelf) {
   const card = `
   <div class="row">
-  <div class="col s12 m6">
-    <div class="card blue-grey darken-1">
-      <div class="card-content white-text">
-        <span class="card-title">Invite to Baobab</span>
-        <div class="row">
-          <div class="input-field col s12">
-            <input id="invite-email" type="email" class="validate">
-            <label for="invite-email">Email</label>
+    <div class="col s6">
+      <div class="card">
+        <div class="card-content green-text">
+          <p class="card-title">Invite Family Member to Baobab!</p>
+          <div class="row">
+            <div class="input-field col s12">
+              <input id="invite-email" type="email" class="validate">
+              <label for="invite-email">Email</label>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="card-action">
-        <a id="send" class="waves-effect waves-light btn-large">Send invitation</a>
+        <div class="card-action">
+          <a id="send" class="waves-effect waves-light btn-large">Send invitation</a>
+        </div>
       </div>
     </div>
   </div>
-</div>
 `;
   $('#email-div').empty().append($(card));
 
