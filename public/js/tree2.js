@@ -165,7 +165,7 @@ function drawTree() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const t = [{id: 18}];
+  const t = [{id: 1}];
   descend(t);
   computeWidth(t);
   let maxLevel = 0;
