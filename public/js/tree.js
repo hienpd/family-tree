@@ -23,6 +23,7 @@ const popUpEditModal = function(event) {
     $('.modal-content').empty();
     $('.modal-content').append($(
       `
+      <h4>Edit Family Member</h4>
       <div class="row">
         <div class="input-field col s4">
           <input value="${person.given_name}" id="edit_given_name" type="text" class="validate">
