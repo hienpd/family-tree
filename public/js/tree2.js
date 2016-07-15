@@ -97,7 +97,7 @@ function childrenOf(id1, id2) {
 }
 
 let topId;
-let depth = 0;
+let depth; // set to 0 before calling findTop *cough* *HACK* *cough*
 function findTop(d, id) {
   if (d >= depth) {
     depth = d;
@@ -177,10 +177,10 @@ function drawTree() {
       break;
     }
   }
-  console.log(selectedPersonId, personsById[selectedPersonId]);
 
+  depth = 0;
   const topId = findTop(0, selectedPersonId);
-  console.log(topId);
+
   const t = [{id: topId}];
   descend(t);
   computeWidth(t);
