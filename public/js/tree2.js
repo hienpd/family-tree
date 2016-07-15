@@ -163,6 +163,9 @@ function computeWidth(children) {
 
 function drawTree() {
 
+  const $canvas = $('.tree-div canvas');
+  $('.tree-div').empty().append($canvas);
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const t = [{id: 1}];
@@ -259,6 +262,7 @@ function drawNode(name, id, x, y) {
 }
 
 function drawLine(a) {
+  ctx.beginPath();
   ctx.strokeStyle = '#fb4d3d';
   ctx.lineWidth = 6;
   ctx.moveTo((a[0] + 1) * g_w, (a[1] + 0) * g_h);
@@ -268,4 +272,5 @@ function drawLine(a) {
     a.splice(0, 2);
   }
   ctx.stroke();
+  ctx.closePath();
 }

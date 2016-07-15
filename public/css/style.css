@@ -26,7 +26,7 @@ main {
   width: 100%;
 }
 
-main {
+main.tree {
   background: rgba(255, 255, 255, 0.85);
 }
 
