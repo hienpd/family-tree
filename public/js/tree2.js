@@ -166,7 +166,7 @@ function drawTree() {
   const $canvas = $('.tree-div canvas');
   $('.tree-div').empty().append($canvas);
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, -10, canvas.width, canvas.height); // origin is 10px down
 
   const t = [{id: 1}];
   descend(t);
