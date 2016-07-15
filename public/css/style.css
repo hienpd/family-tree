@@ -24,6 +24,9 @@ main {
   position: relative;
   margin-top: 3rem;
   width: 100%;
+}
+
+main {
   background: rgba(255, 255, 255, 0.85);
 }
 
