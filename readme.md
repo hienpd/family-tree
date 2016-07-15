@@ -7,7 +7,7 @@ Hien Dang and Michael Park
 
 ### What problem does this project solve?
 
-Visualizing family tree
+Visualizing family trees.
 
 ### Who has this problem?
 
@@ -28,7 +28,7 @@ Family tree.
 ### What web APIs does it use?
 
 Postmark email API.
-Our own API.
+Our own RESTful API to manage people, relationships, and users.
 
 ### What technologies does it use?
 
