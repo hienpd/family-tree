@@ -43,6 +43,10 @@ main.tree {
   padding: 10px;
 }
 
+.node.selected {
+  border: 5px solid #fb4d3d;
+}
+
 .node .edit {
   position: absolute;
   /*width: 40px;

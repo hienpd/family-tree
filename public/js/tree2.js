@@ -97,7 +97,7 @@ function childrenOf(id1, id2) {
 }
 
 let topId;
-let depth = 0;
+let depth; // set to 0 before calling findTop *cough* *HACK* *cough*
 function findTop(d, id) {
   if (d >= depth) {
     depth = d;
@@ -166,14 +166,27 @@ function drawTree() {
   const $canvas = $('.tree-div canvas');
   $('.tree-div').empty().append($canvas);
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, -10, canvas.width, canvas.height); // origin is 10px down
 
-  const t = [{id: 1}];
+  let selectedPersonId;
+
+  const userId = Number.parseInt(/family-tree-userId=(\d+)/.exec(document.cookie)[1]);
+  for (const person of persons) {
+    if (person.user_id === userId) {
+      selectedPersonId = person.id;
+      break;
+    }
+  }
+
+  depth = 0;
+  const topId = findTop(0, selectedPersonId);
+
+  const t = [{id: topId}];
   descend(t);
   computeWidth(t);
   let maxLevel = 0;
   const drawnIds = [];
-  drawSubtree(t, 0, 0, undefined, undefined, t.width);
+  drawSubtree(t, (11 - t.width) / 2, 0, undefined, undefined, t.width);
 
   let x = 0;
   let y = maxLevel + 1;
@@ -181,7 +194,7 @@ function drawTree() {
     if (drawnIds.indexOf(p.id) >= 0) {
       continue;
     }
-    drawNode(`${p.given_name} ${p.family_name}`, p.id, x++, y);
+    drawNode(`${p.given_name} ${p.family_name}`, p.id, selectedPersonId, x++, y);
   }
 
 
@@ -205,16 +218,16 @@ function drawTree() {
       const p = personsById[n.id];
       if (n.r_id === undefined) { // single node
         drawJoin(parentx, parenty, left + offset, level);
-        drawNode(p.given_name + ' ' + p.family_name, p.id, left + offset, level);
+        drawNode(p.given_name + ' ' + p.family_name, p.id, selectedPersonId, left + offset, level);
         drawnIds.push(p.id);
         left += n.width;
       } else if (n.l_id === undefined) { // double node (one mate)
         drawJoin(parentx, parenty, left + offset, level);
         drawLine([left+offset, level, left+offset+1, level]);
-        drawNode(p.given_name + ' ' + p.family_name, p.id, left + offset, level);
+        drawNode(p.given_name + ' ' + p.family_name, p.id, selectedPersonId, left + offset, level);
         drawnIds.push(p.id);
         const p_r = personsById[n.r_id];
-        drawNode(p_r.given_name + ' ' + p_r.family_name, p_r.id, left + offset + 1, level);
+        drawNode(p_r.given_name + ' ' + p_r.family_name, selectedPersonId, p_r.id, left + offset + 1, level);
         drawnIds.push(p_r.id);
         drawSubtree(n.children, left, level + 1, left + offset + 0.5, level, n.width);
         left += n.width;
@@ -226,9 +239,9 @@ function drawTree() {
         const xm = (xl + xr) / 2;
         drawLine([xl - 0.5, level, xr + 0.5, level]);
         drawJoin(parentx, parenty, xm, level);
-        drawNode(p.given_name + ' ' + p.family_name, p.id, xm, level);
-        drawNode(p_r.given_name + ' ' + p_r.family_name, p_r.id, xr + 0.5, level);
-        drawNode(p_l.given_name + ' ' + p_l.family_name, p_l.id, xl - 0.5, level);
+        drawNode(p.given_name + ' ' + p.family_name, p.id, selectedPersonId, xm, level);
+        drawNode(p_r.given_name + ' ' + p_r.family_name, p_r.id, selectedPersonId, xr + 0.5, level);
+        drawNode(p_l.given_name + ' ' + p_l.family_name, p_l.id, selectedPersonId, xl - 0.5, level);
         drawnIds.push(p.id);
         drawnIds.push(p.r_id);
         drawnIds.push(p.l_id);
@@ -256,9 +269,12 @@ ctx.translate(0, 10);
 
 $('.tree-div').on('click', 'a.edit', popUpEditModal);
 
-function drawNode(name, id, x, y) {
-  // $('.tree-div').append($(`<div class="node">${name} ${id}<div class="edit" data-id="${id}">Edit</div></div>`).css({left: (x + 1) * g_w - 50, top: (y + 0) * g_h - 50}));
-  $('.tree-div').append($(`<div class="node">${name}<a class="edit btn-floating yellow" data-id="${id}"><i class="tiny material-icons">mode_edit</i></a></div>`).css({left: (x + 1) * g_w - 50, top: (y + 0) * g_h - 50}));
+function drawNode(name, id, selectedPersonId, x, y) {
+  const $node = $(`<div class="node">${name}<a class="edit btn-floating yellow" data-id="${id}"><i class="tiny material-icons">mode_edit</i></a></div>`);
+  if (id === selectedPersonId) {
+    $node.addClass('selected');
+  }
+  $('.tree-div').append($node.css({left: (x + 1) * g_w - 50, top: (y + 0) * g_h - 50}));
 }
 
 function drawLine(a) {
