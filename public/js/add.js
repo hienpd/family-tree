@@ -58,6 +58,7 @@ var $xhr = $.ajax({
 });
 
 $xhr.done((data) => {
+  console.log(data);
   for (const person of data) {
     $('#choose-parents').append(
       $('<option></option>').val(person.id).html(`${person.given_name} ${person.family_name}`));
