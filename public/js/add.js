@@ -58,11 +58,11 @@ var $xhr = $.ajax({
 });
 
 $xhr.done((data) => {
-  console.log($('#choose-parents'));
   for (const person of data) {
     $('#choose-parents').append(
       $('<option></option>').val(person.id).html(`${person.given_name} ${person.family_name}`));
   }
+  $('select').material_select();
 });
 
 $xhr.fail((err) => {
@@ -166,6 +166,6 @@ $('.datepicker').pickadate({
   format: 'yyyy-mm-dd'
 });
 
-$(document).ready(function() {
-  $('select').material_select();
-});
+// $(document).ready(function() {
+//   $('select').material_select();
+// });
