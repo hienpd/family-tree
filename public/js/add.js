@@ -41,7 +41,7 @@ if (!isSelf) {
     .then((data) => {
       Materialize.toast('Invitation sent!', 4000);
     })
-    .done((err) => {
+    .catch((err) => {
       Materialize.toast('Email failed', 4000);
       console.log(err);
     })
