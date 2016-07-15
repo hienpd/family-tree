@@ -168,12 +168,12 @@ function drawTree() {
 
   ctx.clearRect(0, -10, canvas.width, canvas.height); // origin is 10px down
 
-  const t = [{id: 1}];
+  const t = [{id: 1}];  // HACK: top of tree hardwired to id 1
   descend(t);
   computeWidth(t);
   let maxLevel = 0;
   const drawnIds = [];
-  drawSubtree(t, 0, 0, undefined, undefined, t.width);
+  drawSubtree(t, (11 - t.width) / 2, 0, undefined, undefined, t.width);
 
   let x = 0;
   let y = maxLevel + 1;
