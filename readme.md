@@ -1,21 +1,25 @@
 # Family Tree
 
-A web app that lets a user input their family tree. Implements Node.js, Express, PostgreSQL, and a laptop.
+A web app for managing information about family members and the relationships between them.
+
+For entertainment purposes only.
 
 ### Collaborators
+
 Hien Dang and Michael Park
 
 ### What problem does this project solve?
 
-Visualizing family trees.
+Determining how family members are related.
 
 ### Who has this problem?
 
 Everyone. Especially Hien and other people with large families.
 
-### How will this project solve this problem?
+### How does this project solve this problem?
 
-By allowing people to enter information about family members and the relationships between them.
+Users enter information about their family members and the parent-child relationships between them.
+The system displays a visual representation of the family tree.
 
 ### What inputs does it use?
 
@@ -23,7 +27,7 @@ People (name, gender, dob). Relationships (parent-child). Users (email/password)
 
 ### What outputs does it produce?
 
-Family tree.
+A family tree.
 
 ### What web APIs does it use?
 
@@ -32,5 +36,6 @@ Our own RESTful API to manage people, relationships, and users.
 
 ### What technologies does it use?
 
-HTML/CSS/JavaScript; jQuery, Materialize, HTML canvas
-Express, Postgres
+HTML/CSS/JavaScript; jQuery, Materialize, HTML canvas.
+Node.js, Express, Postgres.
+Laptops.
