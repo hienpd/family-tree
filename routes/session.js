@@ -1,14 +1,13 @@
 'use strict';
 
 const express = require('express');
-const router = express.Router();
+const router = express.Router(); // eslint-disable-line new-cap
 const knex = require('../knex');
-const bcrypt_promise = require('bcrypt-as-promised');
+const bcryptPromise = require('bcrypt-as-promised');
 const ev = require('express-validation');
 const validations = require('../validations/session');
 
 router.post('/session', ev(validations.post), (req, res, next) => {
-
   let userId;
 
   knex('users')
@@ -17,14 +16,14 @@ router.post('/session', ev(validations.post), (req, res, next) => {
   .then((user) => {
     if (!user) {
       const err = new Error('Unauthorized');
-      err.status = 401;
 
+      err.status = 401;
       throw err;
     }
 
     userId = user.id;
 
-    return bcrypt_promise.compare(req.body.password, user.hashed_password);
+    return bcryptPromise.compare(req.body.password, user.hashed_password);
   })
   .then(() => {
     req.session.userId = userId;
@@ -32,10 +31,10 @@ router.post('/session', ev(validations.post), (req, res, next) => {
     res.cookie('family-tree-userId', userId);
     res.sendStatus(200);
   })
-  .catch(bcrypt_promise.MISMATCH_ERROR, () => {
+  .catch(bcryptPromise.MISMATCH_ERROR, () => {
     const err = new Error('Unauthorized');
-    err.status = 401;
 
+    err.status = 401;
     throw err;
   })
   .catch((err) => {
