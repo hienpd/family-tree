@@ -194,6 +194,30 @@
   let maxLevel = 0;
 
   drawTree = function() {
+    // eslint-disable-next-line max-params
+    const drawNode = function(name, id, selectedPersonId, x, y) {
+      const $node = $(`
+        <div class="node">
+        ${name}
+        <a class="edit btn-floating yellow" data-id="${id}">
+        <i class="tiny material-icons">mode_edit</i>
+        </a>
+        </div>`
+      );
+
+      if (id === selectedPersonId) {
+        $node.addClass('selected');
+      }
+      $('.tree-div').append(
+        $node.css({
+          left: (x + 1) * gridSquareWidth - 50,
+          top: (y + 0) * gridSquareHeight - 50
+        })
+      );
+    };
+
+    const drawnIds = [];
+
     const drawSubtree = function(tree, left, level, parentx, parenty, parentw) {
       if (level > maxLevel) {
         maxLevel = level;
@@ -227,20 +251,24 @@
 
         if (node.rightId === undefined) { // single node
           drawJoin(parentx, parenty, left + offset, level);
-          drawNode(person.given_name + ' ' + person.family_name, person.id, selectedPersonId, left + offset, level);
+          drawNode(person.given_name + ' ' + person.family_name, person.id,
+            selectedPersonId, left + offset, level);
           drawnIds.push(person.id);
           left += node.width;
         }
         else if (node.leftId === undefined) { // double node (one mate)
           drawJoin(parentx, parenty, left + offset, level);
           drawLine([left+offset, level, left+offset+1, level]);
-          drawNode(person.given_name + ' ' + person.family_name, person.id, selectedPersonId, left + offset, level);
+          drawNode(person.given_name + ' ' + person.family_name, person.id,
+            selectedPersonId, left + offset, level);
           drawnIds.push(person.id);
           const p_r = personsById[node.rightId];
 
-          drawNode(p_r.given_name + ' ' + p_r.family_name, selectedPersonId, p_r.id, left + offset + 1, level);
+          drawNode(p_r.given_name + ' ' + p_r.family_name, selectedPersonId,
+            p_r.id, left + offset + 1, level);
           drawnIds.push(p_r.id);
-          drawSubtree(node.children, left, level + 1, left + offset + 0.5, level, node.width);
+          drawSubtree(node.children, left, level + 1, left + offset + 0.5,
+            level, node.width);
           left += node.width;
         }
         else { // triple node (two mates)
@@ -252,15 +280,20 @@
 
           drawLine([xl - 0.5, level, xr + 0.5, level]);
           drawJoin(parentx, parenty, xm, level);
-          drawNode(person.given_name + ' ' + person.family_name, person.id, selectedPersonId, xm, level);
-          drawNode(p_r.given_name + ' ' + p_r.family_name, p_r.id, selectedPersonId, xr + 0.5, level);
-          drawNode(p_l.given_name + ' ' + p_l.family_name, p_l.id, selectedPersonId, xl - 0.5, level);
+          drawNode(person.given_name + ' ' + person.family_name, person.id,
+            selectedPersonId, xm, level);
+          drawNode(p_r.given_name + ' ' + p_r.family_name, p_r.id,
+            selectedPersonId, xr + 0.5, level);
+          drawNode(p_l.given_name + ' ' + p_l.family_name, p_l.id,
+            selectedPersonId, xl - 0.5, level);
           drawnIds.push(person.id);
           drawnIds.push(person.rightId);
           drawnIds.push(person.leftId);
-          drawSubtree(node.leftChildren, left + offset, level + 1, xl, level, node.leftWidth);
+          drawSubtree(node.leftChildren, left + offset, level + 1, xl, level,
+            node.leftWidth);
           left += node.leftWidth;
-          drawSubtree(node.rightChildren, left + offset, level + 1, xr, level, node.rightWidth);
+          drawSubtree(node.rightChildren, left + offset, level + 1, xr, level,
+            node.rightWidth);
           left += node.rightWidth;
         }
       }
@@ -289,18 +322,18 @@
 
     descend(top);
     computeWidth(top);
-    const drawnIds = [];
 
     drawSubtree(top, (11 - top.width) / 2, 0, undefined, undefined, top.width);
 
     let x = 0;
-    let y = maxLevel + 1;
-    for (const p of persons) {
-      if (drawnIds.indexOf(p.id) >= 0) {
+    const y = maxLevel + 1;
+
+    for (const person of persons) {
+      if (drawnIds.indexOf(person.id) >= 0) {
         continue;
       }
-      drawNode(`${p.given_name} ${p.family_name}`,
-        p.id, selectedPersonId, x, y);
+      drawNode(`${person.given_name} ${person.family_name}`,
+        person.id, selectedPersonId, x, y);
       x += 1;
     }
   };
@@ -310,27 +343,6 @@
   ctx.translate(0, 10);
 
   $('.tree-div').on('click', 'a.edit', popUpEditModal);
-
-   // eslint-disable-next-line max-params
-  const drawNode = function(name, id, selectedPersonId, x, y) {
-    const $node = $(`
-      <div class="node">
-        ${name}
-        <a class="edit btn-floating yellow" data-id="${id}">
-          <i class="tiny material-icons">mode_edit</i>
-        </a>
-      </div>`);
-
-    if (id === selectedPersonId) {
-      $node.addClass('selected');
-    }
-    $('.tree-div').append(
-      $node.css({
-        left: (x + 1) * gridSquareWidth - 50,
-        top: (y + 0) * gridSquareHeight - 50
-      })
-    );
-  };
 
   const drawLine = function(coords) {
     ctx.beginPath();
