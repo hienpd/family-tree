@@ -6,6 +6,70 @@
 
   let person;
 
+  const saveClickHandler = function() {
+    if ($('#choose-parents').val().length > 2) {
+      return Materialize.toast('Maximum number of parents is two!', 4000);
+    }
+    const stuff = {
+      given_name: $('#edit_given_name').val(),
+      middle_name: $('#edit_middle_name').val(),
+      family_name: $('#edit_family_name').val(),
+      gender: $('#edit_gender').val()
+    };
+
+    if ($('#edit_dob').val()) {
+      stuff.dob = $('#edit_dob').val();
+    }
+
+    $.ajax({ // update person
+      method: 'PATCH',
+      url: `/people/${person.id}`,
+      contentType: 'application/json',
+      data: JSON.stringify(stuff)
+    })
+    .then(() =>
+      $.ajax({
+        method: 'PATCH',
+        url: `/parents_children/${person.id}`,
+        contentType: 'application/json',
+        data: JSON.stringify($('#choose-parents').val().map((parent) =>
+          ({
+            parent_id: parent,
+            child_id: person.id
+          })
+        ))
+      })
+    )
+    .then(() => {
+      $('#modal1').closeModal();
+      loadTreePage();
+    })
+    .catch(() => {
+      Materialize.toast('Unable to save', 4000);
+    }); // update person
+  };
+
+  const sendClickHandler = function() {
+    const email = $('#invite-email').val();
+
+    if (email.length === 0) {
+      return Materialize.toast('Please enter email', 4000);
+    }
+
+    $.ajax({
+      method: 'POST',
+      url: '/email',
+      contentType: 'application/json',
+      data: JSON.stringify({ email })
+    })
+    .then(() => {
+      Materialize.toast('Invitation sent!', 4000);
+    })
+    .catch(() => {
+      Materialize.toast('Email failed', 4000);
+    });
+  };
+
   window.popUpEditModal = function(event) {
     const id = $(event.currentTarget).attr('data-id');
 
@@ -139,69 +203,9 @@
         $('select').material_select();
         $('#modal1').openModal();
 
-        $('#send').click(() => {
-          const email = $('#invite-email').val();
+        $('#send').click(sendClickHandler);
 
-          if (email.length === 0) {
-            return Materialize.toast('Please enter email', 4000);
-          }
-
-          $.ajax({
-            method: 'POST',
-            url: '/email',
-            contentType: 'application/json',
-            data: JSON.stringify({ email })
-          })
-          .then(() => {
-            Materialize.toast('Invitation sent!', 4000);
-          })
-          .catch(() => {
-            Materialize.toast('Email failed', 4000);
-          });
-        }); // #send.click
-
-        $('#save').click(() => {
-          if ($('#choose-parents').val().length > 2) {
-            return Materialize.toast('Maximum number of parents is two!', 4000);
-          }
-          const stuff = {
-            given_name: $('#edit_given_name').val(),
-            middle_name: $('#edit_middle_name').val(),
-            family_name: $('#edit_family_name').val(),
-            gender: $('#edit_gender').val()
-          };
-
-          if ($('#edit_dob').val()) {
-            stuff.dob = $('#edit_dob').val();
-          }
-
-          $.ajax({ // update person
-            method: 'PATCH',
-            url: `/people/${person.id}`,
-            contentType: 'application/json',
-            data: JSON.stringify(stuff)
-          })
-          .then(() =>
-            $.ajax({
-              method: 'PATCH',
-              url: `/parents_children/${person.id}`,
-              contentType: 'application/json',
-              data: JSON.stringify($('#choose-parents').val().map((parent) =>
-                ({
-                  parent_id: parent,
-                  child_id: person.id
-                })
-              ))
-            })
-          )
-          .then(() => {
-            $('#modal1').closeModal();
-            loadTreePage();
-          })
-          .catch(() => {
-            Materialize.toast('Unable to save', 4000);
-          }); // update person
-        }); // #save.click
+        $('#save').click(saveClickHandler);
       })
       .catch(() => {
         Materialize.toast('Unable to open edit modal', 4000);
