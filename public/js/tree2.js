@@ -16,7 +16,7 @@
   let initData; // eslint-disable-line prefer-const
   let drawTree; // eslint-disable-line prefer-const
 
-  const loadTreePage = function() {
+  window.loadTreePage = function() {
     $.ajax({
       method: 'GET',
       url: '/people'
@@ -41,7 +41,7 @@
     });
   };
 
-  loadTreePage();
+  window.loadTreePage();
 
   let personsById;
   let materix;

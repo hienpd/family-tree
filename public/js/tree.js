@@ -1,5 +1,4 @@
 /* eslint camelcase: "off" */
-/* global loadTreePage:false */
 
 (function() {
   'use strict';
@@ -42,7 +41,7 @@
     )
     .then(() => {
       $('#modal1').closeModal();
-      loadTreePage();
+      window.loadTreePage();
     })
     .catch(() => {
       Materialize.toast('Unable to save', 4000);
