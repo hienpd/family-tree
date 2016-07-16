@@ -1,9 +1,8 @@
 'use strict';
 
 const express = require('express');
-const router = express.Router();
+const router = express.Router(); // eslint-disable-line new-cap
 const knex = require('../knex');
-const server = require('../server');
 const ev = require('express-validation');
 const validations = require('../validations/people');
 
