@@ -133,42 +133,54 @@
           break;
         case 1:
           generation[i].rightId = null;
-          generation[i].children = childrenOf(generation[i].id, generation[i].id);
-          generation[i].children = descend(generation[i].children.map((x) => ({id: x})));
+          generation[i].children =
+            childrenOf(generation[i].id, generation[i].id);
+          generation[i].children =
+            descend(generation[i].children.map((x) => ({ id: x })));
           break;
         case 2:
           ms.splice(ms.indexOf(generation[i].id), 1);
           generation[i].rightId = ms[0];
-          generation[i].children = childrenOf(generation[i].id, generation[i].rightId);
-          generation[i].children = descend(generation[i].children.map((x) => ({id: x})));
+          generation[i].children =
+            childrenOf(generation[i].id, generation[i].rightId);
+          generation[i].children =
+            descend(generation[i].children.map((x) => ({ id: x })));
           break;
         case 3:
           ms.splice(ms.indexOf(generation[i].id), 1);
           generation[i].leftId = ms[0];
           generation[i].rightId = ms[1];
-          generation[i].l_children = childrenOf(generation[i].id, generation[i].leftId);
-          generation[i].r_children = childrenOf(generation[i].id, generation[i].rightId);
-          generation[i].l_children = descend(generation[i].l_children.map((x) => ({id: x})));
-          generation[i].r_children = descend(generation[i].r_children.map((x) => ({id: x})));
+          generation[i].leftChildren =
+            childrenOf(generation[i].id, generation[i].leftId);
+          generation[i].rightChildren =
+            childrenOf(generation[i].id, generation[i].rightId);
+          generation[i].leftChildren =
+            descend(generation[i].leftChildren.map((x) => ({ id: x })));
+          generation[i].rightChildren =
+            descend(generation[i].rightChildren.map((x) => ({ id: x })));
           break;
         default:
       }
     }
+
     return generation;
   };
 
   const computeWidth = function(children) {
     let width = 0;
+
     for (const child of children) {
       if (child.rightId === undefined) { // no mates => no children
         child.width = 1;
         width += child.width;
-      } else if (child.leftId === undefined) { // one mate (on right)
+      }
+      else if (child.leftId === undefined) { // one mate (on right)
         child.width = Math.max(2, computeWidth(child.children));
         width += child.width;
-      } else {  // two mates
-        child.l_width = Math.max(2, computeWidth(child.l_children));
-        child.r_width = Math.max(2, computeWidth(child.r_children));
+      }
+      else {  // two mates
+        child.l_width = Math.max(2, computeWidth(child.leftChildren));
+        child.r_width = Math.max(2, computeWidth(child.rightChildren));
         width += child.l_width + child.r_width;
       }
     }
@@ -196,7 +208,7 @@
     topHeight = 0;
     const topId = findTop(0, selectedPersonId);
 
-    const t = [{id: topId}];
+    const t = [{ id: topId }];
     descend(t);
     computeWidth(t);
     let maxLevel = 0;
@@ -260,9 +272,9 @@
           drawnIds.push(p.id);
           drawnIds.push(p.rightId);
           drawnIds.push(p.leftId);
-          drawSubtree(n.l_children, left + offset, level + 1, xl, level, n.l_width);
+          drawSubtree(n.leftChildren, left + offset, level + 1, xl, level, n.l_width);
           left += n.l_width;
-          drawSubtree(n.r_children, left + offset, level + 1, xr, level, n.r_width);
+          drawSubtree(n.rightChildren, left + offset, level + 1, xr, level, n.r_width);
           left += n.r_width;
         }
       }
