@@ -195,7 +195,7 @@
 
   drawTree = function() {
     // eslint-disable-next-line max-params
-    const drawNode = function(name, id, selectedPersonId, x, y) {
+    const drawNode = function(name, id, selectedId, x, y) {
       const $node = $(`
         <div class="node">
         ${name}
@@ -205,7 +205,7 @@
         </div>`
       );
 
-      if (id === selectedPersonId) {
+      if (id === selectedId) {
         $node.addClass('selected');
       }
       $('.tree-div').append(
@@ -216,9 +216,36 @@
       );
     };
 
+    const drawLine = function(coords) {
+      ctx.beginPath();
+      ctx.strokeStyle = '#fb4d3d';
+      ctx.lineWidth = 6;
+      ctx.moveTo((coords[0] + 1) * gridSquareWidth,
+                 (coords[1] + 0) * gridSquareHeight);
+      coords.splice(0, 2);
+      while (coords.length) {
+        ctx.lineTo((coords[0] + 1) * gridSquareWidth,
+                   (coords[1] + 0) * gridSquareHeight);
+        coords.splice(0, 2);
+      }
+      ctx.stroke();
+      ctx.closePath();
+    };
+
+    // eslint-disable-next-line max-params
+    const drawJoin = function(parentx, parenty, x, y) {
+      if (parentx === undefined) {
+        return;
+      }
+      const midy = (parenty + y) / 2;
+
+      drawLine([parentx, parenty, parentx, midy, x, midy, x, y]);
+    };
+
     const drawnIds = [];
     let selectedPersonId;
 
+    // eslint-disable-next-line max-params
     const drawSubtree = function(tree, left, level, parentx, parenty, parentw) {
       if (level > maxLevel) {
         maxLevel = level;
@@ -239,54 +266,46 @@
       }
       const offset = (parentw - actualw) / 2;
 
-      const drawJoin = function(parentx, parenty, x, y) {
-        if (parentx === undefined) {
-          return;
-        }
-        const midy = (parenty + y) / 2;
-        drawLine([parentx, parenty, parentx, midy, x, midy, x, y]);
-      }
-
       for (const node of tree) {
         const person = personsById[node.id];
 
         if (node.rightId === undefined) { // single node
           drawJoin(parentx, parenty, left + offset, level);
-          drawNode(person.given_name + ' ' + person.family_name, person.id,
+          drawNode(`${person.given_name} ${person.family_name}`, person.id,
             selectedPersonId, left + offset, level);
           drawnIds.push(person.id);
           left += node.width;
         }
         else if (node.leftId === undefined) { // double node (one mate)
           drawJoin(parentx, parenty, left + offset, level);
-          drawLine([left+offset, level, left+offset+1, level]);
-          drawNode(person.given_name + ' ' + person.family_name, person.id,
+          drawLine([left + offset, level, left + offset + 1, level]);
+          drawNode(`${person.given_name} ${person.family_name}`, person.id,
             selectedPersonId, left + offset, level);
           drawnIds.push(person.id);
-          const p_r = personsById[node.rightId];
+          const personRight = personsById[node.rightId];
 
-          drawNode(p_r.given_name + ' ' + p_r.family_name, selectedPersonId,
-            p_r.id, left + offset + 1, level);
-          drawnIds.push(p_r.id);
+          drawNode(`${personRight.given_name} ${personRight.family_name}`,
+            selectedPersonId, personRight.id, left + offset + 1, level);
+          drawnIds.push(personRight.id);
           drawSubtree(node.children, left, level + 1, left + offset + 0.5,
             level, node.width);
           left += node.width;
         }
         else { // triple node (two mates)
-          const p_r = personsById[node.rightId];
-          const p_l = personsById[node.leftId];
+          const personRight = personsById[node.rightId];
+          const personLeft = personsById[node.leftId];
           const xl = (node.leftWidth - 1) / 2 + offset;
           const xr = (node.rightWidth - 1) / 2 + node.leftWidth + offset;
           const xm = (xl + xr) / 2;
 
           drawLine([xl - 0.5, level, xr + 0.5, level]);
           drawJoin(parentx, parenty, xm, level);
-          drawNode(person.given_name + ' ' + person.family_name, person.id,
+          drawNode(`${person.given_name} ${person.family_name}`, person.id,
             selectedPersonId, xm, level);
-          drawNode(p_r.given_name + ' ' + p_r.family_name, p_r.id,
-            selectedPersonId, xr + 0.5, level);
-          drawNode(p_l.given_name + ' ' + p_l.family_name, p_l.id,
-            selectedPersonId, xl - 0.5, level);
+          drawNode(`${personRight.given_name} ${personRight.family_name}`,
+            personRight.id, selectedPersonId, xr + 0.5, level);
+          drawNode(`${personLeft.given_name} ${personLeft.family_name}`,
+            personLeft.id, selectedPersonId, xl - 0.5, level);
           drawnIds.push(person.id);
           drawnIds.push(person.rightId);
           drawnIds.push(person.leftId);
@@ -324,17 +343,19 @@
 
     drawSubtree(top, (11 - top.width) / 2, 0, undefined, undefined, top.width);
 
-    let x = 0;
-    const y = maxLevel + 1;
+    (function drawUnconnectedNodes() {
+      let x = 0;
+      const y = maxLevel + 1;
 
-    for (const person of persons) {
-      if (drawnIds.indexOf(person.id) >= 0) {
-        continue;
+      for (const person of persons) {
+        if (drawnIds.indexOf(person.id) >= 0) {
+          continue;
+        }
+        drawNode(`${person.given_name} ${person.family_name}`,
+          person.id, selectedPersonId, x, y);
+        x += 1;
       }
-      drawNode(`${person.given_name} ${person.family_name}`,
-        person.id, selectedPersonId, x, y);
-      x += 1;
-    }
+    })();
   };
 
   canvas.width = 1440;
@@ -342,20 +363,4 @@
   ctx.translate(0, 10);
 
   $('.tree-div').on('click', 'a.edit', popUpEditModal);
-
-  const drawLine = function(coords) {
-    ctx.beginPath();
-    ctx.strokeStyle = '#fb4d3d';
-    ctx.lineWidth = 6;
-    ctx.moveTo((coords[0] + 1) * gridSquareWidth,
-               (coords[1] + 0) * gridSquareHeight);
-    coords.splice(0, 2);
-    while (coords.length) {
-      ctx.lineTo((coords[0] + 1) * gridSquareWidth,
-                 (coords[1] + 0) * gridSquareHeight);
-      coords.splice(0, 2);
-    }
-    ctx.stroke();
-    ctx.closePath();
-  };
 })();
