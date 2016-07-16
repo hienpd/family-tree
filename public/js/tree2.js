@@ -1,3 +1,5 @@
+/* global popUpEditModal:false */
+
 (function() {
   'use strict';
 
@@ -297,9 +299,11 @@
       if (drawnIds.indexOf(p.id) >= 0) {
         continue;
       }
-      drawNode(`${p.given_name} ${p.family_name}`, p.id, selectedPersonId, x++, y);
+      drawNode(`${p.given_name} ${p.family_name}`,
+        p.id, selectedPersonId, x, y);
+      x += 1;
     }
-  }
+  };
 
   canvas.width = 1440;
   canvas.height = 550;
@@ -307,7 +311,8 @@
 
   $('.tree-div').on('click', 'a.edit', popUpEditModal);
 
-  function drawNode(name, id, selectedPersonId, x, y) { // eslint-disable-line max-params
+   // eslint-disable-next-line max-params
+  const drawNode = function(name, id, selectedPersonId, x, y) {
     const $node = $(`
       <div class="node">
         ${name}
@@ -325,19 +330,21 @@
         top: (y + 0) * gridSquareHeight - 50
       })
     );
-  }
+  };
 
-  function drawLine(coords) {
+  const drawLine = function(coords) {
     ctx.beginPath();
     ctx.strokeStyle = '#fb4d3d';
     ctx.lineWidth = 6;
-    ctx.moveTo((coords[0] + 1) * gridSquareWidth, (coords[1] + 0) * gridSquareHeight);
+    ctx.moveTo((coords[0] + 1) * gridSquareWidth,
+               (coords[1] + 0) * gridSquareHeight);
     coords.splice(0, 2);
     while (coords.length) {
-      ctx.lineTo((coords[0] + 1) * gridSquareWidth, (coords[1] + 0) * gridSquareHeight);
+      ctx.lineTo((coords[0] + 1) * gridSquareWidth,
+                 (coords[1] + 0) * gridSquareHeight);
       coords.splice(0, 2);
     }
     ctx.stroke();
     ctx.closePath();
-  }
+  };
 })();
