@@ -1,5 +1,6 @@
+/* eslint-disable max-lines */
 /* global popUpEditModal:false */
-
+// eslint-disable-next-line max-statements
 (function() {
   'use strict';
 
