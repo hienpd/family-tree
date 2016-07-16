@@ -212,6 +212,14 @@
       }
       const offset = (parentw - actualw) / 2;
 
+      const drawJoin = function(parentx, parenty, x, y) {
+        if (parentx === undefined) {
+          return;
+        }
+        const midy = (parenty + y) / 2;
+        drawLine([parentx, parenty, parentx, midy, x, midy, x, y]);
+      }
+
       for (const node of tree) {
         const person = personsById[node.id];
 
@@ -291,18 +299,7 @@
       }
       drawNode(`${p.given_name} ${p.family_name}`, p.id, selectedPersonId, x++, y);
     }
-
-
   }
-
-  function drawJoin(parentx, parenty, x, y) {
-    if (parentx === undefined) {
-      return;
-    }
-    const midy = (parenty + y) / 2;
-    drawLine([parentx, parenty, parentx, midy, x, midy, x, y]);
-  }
-
 
   canvas.width = 1440;
   canvas.height = 550;
@@ -310,23 +307,35 @@
 
   $('.tree-div').on('click', 'a.edit', popUpEditModal);
 
-  function drawNode(name, id, selectedPersonId, x, y) {
-    const $node = $(`<div class="node">${name}<a class="edit btn-floating yellow" data-id="${id}"><i class="tiny material-icons">mode_edit</i></a></div>`);
+  function drawNode(name, id, selectedPersonId, x, y) { // eslint-disable-line max-params
+    const $node = $(`
+      <div class="node">
+        ${name}
+        <a class="edit btn-floating yellow" data-id="${id}">
+          <i class="tiny material-icons">mode_edit</i>
+        </a>
+      </div>`);
+
     if (id === selectedPersonId) {
       $node.addClass('selected');
     }
-    $('.tree-div').append($node.css({left: (x + 1) * gridSquareWidth - 50, top: (y + 0) * gridSquareHeight - 50}));
+    $('.tree-div').append(
+      $node.css({
+        left: (x + 1) * gridSquareWidth - 50,
+        top: (y + 0) * gridSquareHeight - 50
+      })
+    );
   }
 
-  function drawLine(a) {
+  function drawLine(coords) {
     ctx.beginPath();
     ctx.strokeStyle = '#fb4d3d';
     ctx.lineWidth = 6;
-    ctx.moveTo((a[0] + 1) * gridSquareWidth, (a[1] + 0) * gridSquareHeight);
-    a.splice(0, 2);
-    while (a.length) {
-      ctx.lineTo((a[0] + 1) * gridSquareWidth, (a[1] + 0) * gridSquareHeight);
-      a.splice(0, 2);
+    ctx.moveTo((coords[0] + 1) * gridSquareWidth, (coords[1] + 0) * gridSquareHeight);
+    coords.splice(0, 2);
+    while (coords.length) {
+      ctx.lineTo((coords[0] + 1) * gridSquareWidth, (coords[1] + 0) * gridSquareHeight);
+      coords.splice(0, 2);
     }
     ctx.stroke();
     ctx.closePath();
