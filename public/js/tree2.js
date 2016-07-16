@@ -253,68 +253,94 @@
 
       let actualw = 0;
 
-      for (const node of tree) {
-        if (node.rightId === undefined) { // single node
-          actualw += 1;
+      (function computeActualWidth() {
+        for (const node of tree) {
+          if (node.rightId === undefined) { // single node
+            actualw += 1;
+          }
+          else if (node.leftId === undefined) { // double node (one mate)
+            actualw += 2;
+          }
+          else { // triple node (two mates)
+            actualw += (node.leftWidth + node.rightWidth) / 2 + 1;
+          }
         }
-        else if (node.leftId === undefined) { // double node (one mate)
-          actualw += 2;
-        }
-        else { // triple node (two mates)
-          actualw += (node.leftWidth + node.rightWidth) / 2 + 1;
-        }
-      }
+      })();
+
       const offset = (parentw - actualw) / 2;
+
+      const singleNode = function(node, person) {
+        drawJoin(parentx, parenty, left + offset, level);
+        drawNode(`${person.given_name} ${person.family_name}`, person.id,
+          selectedPersonId, left + offset, level
+        );
+        drawnIds.push(person.id);
+        left += node.width;
+      };
+
+      const doubleNode = function(node, person) {
+        drawJoin(parentx, parenty, left + offset, level);
+        drawLine([left + offset, level, left + offset + 1, level]);
+        drawNode(`${person.given_name} ${person.family_name}`, person.id,
+          selectedPersonId, left + offset, level
+        );
+        drawnIds.push(person.id);
+        const personRight = personsById[node.rightId];
+
+        drawNode(`${personRight.given_name} ${personRight.family_name}`,
+          selectedPersonId, personRight.id, left + offset + 1, level
+        );
+        drawnIds.push(personRight.id);
+        drawSubtree(node.children, left, level + 1, left + offset + 0.5,
+          level, node.width
+        );
+        left += node.width;
+      };
+
+      const tripleNode = function(node, person) {
+        const personRight = personsById[node.rightId];
+        const personLeft = personsById[node.leftId];
+        const xl = (node.leftWidth - 1) / 2 + offset;
+        const xr = (node.rightWidth - 1) / 2 + node.leftWidth + offset;
+        const xm = (xl + xr) / 2;
+
+        drawLine([xl - 0.5, level, xr + 0.5, level]);
+        drawJoin(parentx, parenty, xm, level);
+        drawNode(`${person.given_name} ${person.family_name}`, person.id,
+          selectedPersonId, xm, level
+        );
+        drawNode(`${personRight.given_name} ${personRight.family_name}`,
+          personRight.id, selectedPersonId, xr + 0.5, level
+        );
+        drawNode(`${personLeft.given_name} ${personLeft.family_name}`,
+          personLeft.id, selectedPersonId, xl - 0.5, level
+        );
+        (function pushIds() {
+          drawnIds.push(person.id);
+          drawnIds.push(person.rightId);
+          drawnIds.push(person.leftId);
+        })();
+        drawSubtree(node.leftChildren, left + offset, level + 1, xl, level,
+          node.leftWidth
+        );
+        left += node.leftWidth;
+        drawSubtree(node.rightChildren, left + offset, level + 1, xr, level,
+          node.rightWidth
+        );
+        left += node.rightWidth;
+      };
 
       for (const node of tree) {
         const person = personsById[node.id];
 
         if (node.rightId === undefined) { // single node
-          drawJoin(parentx, parenty, left + offset, level);
-          drawNode(`${person.given_name} ${person.family_name}`, person.id,
-            selectedPersonId, left + offset, level);
-          drawnIds.push(person.id);
-          left += node.width;
+          singleNode(node, person);
         }
         else if (node.leftId === undefined) { // double node (one mate)
-          drawJoin(parentx, parenty, left + offset, level);
-          drawLine([left + offset, level, left + offset + 1, level]);
-          drawNode(`${person.given_name} ${person.family_name}`, person.id,
-            selectedPersonId, left + offset, level);
-          drawnIds.push(person.id);
-          const personRight = personsById[node.rightId];
-
-          drawNode(`${personRight.given_name} ${personRight.family_name}`,
-            selectedPersonId, personRight.id, left + offset + 1, level);
-          drawnIds.push(personRight.id);
-          drawSubtree(node.children, left, level + 1, left + offset + 0.5,
-            level, node.width);
-          left += node.width;
+          doubleNode(node, person);
         }
         else { // triple node (two mates)
-          const personRight = personsById[node.rightId];
-          const personLeft = personsById[node.leftId];
-          const xl = (node.leftWidth - 1) / 2 + offset;
-          const xr = (node.rightWidth - 1) / 2 + node.leftWidth + offset;
-          const xm = (xl + xr) / 2;
-
-          drawLine([xl - 0.5, level, xr + 0.5, level]);
-          drawJoin(parentx, parenty, xm, level);
-          drawNode(`${person.given_name} ${person.family_name}`, person.id,
-            selectedPersonId, xm, level);
-          drawNode(`${personRight.given_name} ${personRight.family_name}`,
-            personRight.id, selectedPersonId, xr + 0.5, level);
-          drawNode(`${personLeft.given_name} ${personLeft.family_name}`,
-            personLeft.id, selectedPersonId, xl - 0.5, level);
-          drawnIds.push(person.id);
-          drawnIds.push(person.rightId);
-          drawnIds.push(person.leftId);
-          drawSubtree(node.leftChildren, left + offset, level + 1, xl, level,
-            node.leftWidth);
-          left += node.leftWidth;
-          drawSubtree(node.rightChildren, left + offset, level + 1, xr, level,
-            node.rightWidth);
-          left += node.rightWidth;
+          tripleNode(node, person);
         }
       }
     };
