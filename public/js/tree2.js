@@ -179,25 +179,28 @@
         width += child.width;
       }
       else {  // two mates
-        child.l_width = Math.max(2, computeWidth(child.leftChildren));
-        child.r_width = Math.max(2, computeWidth(child.rightChildren));
-        width += child.l_width + child.r_width;
+        child.leftWidth = Math.max(2, computeWidth(child.leftChildren));
+        child.rightWidth = Math.max(2, computeWidth(child.rightChildren));
+        width += child.leftWidth + child.rightWidth;
       }
     }
     children.width = width;
+
     return width;
   };
 
   drawTree = function() {
-
     const $canvas = $('.tree-div canvas');
+
     $('.tree-div').empty().append($canvas);
 
     ctx.clearRect(0, -10, canvas.width, canvas.height); // origin is 10px down
 
     let selectedPersonId;
 
-    const userId = Number.parseInt(/family-tree-userId=(\d+)/.exec(document.cookie)[1]);
+    const userId =
+      Number.parseInt(/family-tree-userId=(\d+)/.exec(document.cookie)[1]);
+
     for (const person of persons) {
       if (person.user_id === userId) {
         selectedPersonId = person.id;
@@ -237,7 +240,7 @@
         } else if (n.leftId === undefined) { // double node (one mate)
           actualw += 2;
         } else { // triple node (two mates)
-          actualw += (n.l_width + n.r_width) / 2 + 1;
+          actualw += (n.leftWidth + n.rightWidth) / 2 + 1;
         }
       }
       const offset = (parentw - actualw) / 2;
@@ -261,8 +264,8 @@
         } else { // triple node (two mates)
           const p_r = personsById[n.rightId];
           const p_l = personsById[n.leftId];
-          const xl = (n.l_width - 1) / 2 + offset;
-          const xr = (n.r_width - 1) / 2 + n.l_width + offset;
+          const xl = (n.leftWidth - 1) / 2 + offset;
+          const xr = (n.rightWidth - 1) / 2 + n.leftWidth + offset;
           const xm = (xl + xr) / 2;
           drawLine([xl - 0.5, level, xr + 0.5, level]);
           drawJoin(parentx, parenty, xm, level);
@@ -272,10 +275,10 @@
           drawnIds.push(p.id);
           drawnIds.push(p.rightId);
           drawnIds.push(p.leftId);
-          drawSubtree(n.leftChildren, left + offset, level + 1, xl, level, n.l_width);
-          left += n.l_width;
-          drawSubtree(n.rightChildren, left + offset, level + 1, xr, level, n.r_width);
-          left += n.r_width;
+          drawSubtree(n.leftChildren, left + offset, level + 1, xl, level, n.leftWidth);
+          left += n.leftWidth;
+          drawSubtree(n.rightChildren, left + offset, level + 1, xr, level, n.rightWidth);
+          left += n.rightWidth;
         }
       }
     }
