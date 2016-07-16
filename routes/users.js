@@ -1,8 +1,9 @@
+/* eslint-disable camelcase */
 'use strict';
 
 const express = require('express');
 const router = express.Router(); // eslint-disable-line new-cap
-const bcrypt_promise = require('bcrypt-as-promised');
+const bcryptPromise = require('bcrypt-as-promised');
 const knex = require('../knex');
 const ev = require('express-validation');
 const validations = require('../validations/users');
@@ -22,15 +23,15 @@ router.post('/users', ev(validations.post), (req, res, next) => {
         .send('Email already exists');
     }
 
-    return bcrypt_promise.hash(req.body.password, 12);
+    return bcryptPromise.hash(req.body.password, 12);
   })
-  .then((hashed_password) => {
-    return knex('users')
+  .then((hashed_password) =>
+    knex('users')
     .insert({
       email: user.email,
       hashed_password
     })
-  })
+  )
   .then(() => {
     res.sendStatus(200);
   })
