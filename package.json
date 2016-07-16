@@ -9,7 +9,7 @@
     "start": "node server.js",
     "heroku-postbuild": "knex migrate:latest",
     "nf": "nf start",
-    "lint": "eslint public/js"
+    "lint": "eslint public/js/tree*.js"
   },
   "keywords": [
     "postgres"
