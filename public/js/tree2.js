@@ -173,10 +173,13 @@
     let width = 0;
 
     for (const child of children) {
+      // eslint-disable-next-line no-undefined
       if (child.rightId === undefined) { // no mates => no children
         child.width = 1;
         width += child.width;
       }
+
+      // eslint-disable-next-line no-undefined
       else if (child.leftId === undefined) { // one mate (on right)
         child.width = Math.max(2, computeWidth(child.children));
         width += child.width;
@@ -234,7 +237,7 @@
 
   // eslint-disable-next-line max-params
   const drawJoin = function(parentx, parenty, x, y) {
-    if (parentx === undefined) {
+    if (parentx === undefined) { // eslint-disable-line no-undefined
       return;
     }
     const midy = (parenty + y) / 2;
@@ -255,9 +258,12 @@
 
     (function computeActualWidth() {
       for (const node of tree) {
+        // eslint-disable-next-line no-undefined
         if (node.rightId === undefined) { // single node
           actualw += 1;
         }
+
+        // eslint-disable-next-line no-undefined
         else if (node.leftId === undefined) { // double node (one mate)
           actualw += 2;
         }
@@ -333,9 +339,12 @@
     for (const node of tree) {
       const person = personsById[node.id];
 
+      // eslint-disable-next-line no-undefined
       if (node.rightId === undefined) { // single node
         singleNode(node, person);
       }
+
+      // eslint-disable-next-line no-undefined
       else if (node.leftId === undefined) { // double node (one mate)
         doubleNode(node, person);
       }
@@ -368,6 +377,7 @@
     descend(top);
     computeWidth(top);
 
+    // eslint-disable-next-line no-undefined
     drawSubtree(top, (11 - top.width) / 2, 0, undefined, undefined, top.width);
 
     (function drawUnconnectedNodes() {
