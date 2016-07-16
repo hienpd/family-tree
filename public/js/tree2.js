@@ -132,22 +132,22 @@
         case 0:
           break;
         case 1:
-          generation[i].r_id = null;
+          generation[i].rightId = null;
           generation[i].children = childrenOf(generation[i].id, generation[i].id);
           generation[i].children = descend(generation[i].children.map((x) => ({id: x})));
           break;
         case 2:
           ms.splice(ms.indexOf(generation[i].id), 1);
-          generation[i].r_id = ms[0];
-          generation[i].children = childrenOf(generation[i].id, generation[i].r_id);
+          generation[i].rightId = ms[0];
+          generation[i].children = childrenOf(generation[i].id, generation[i].rightId);
           generation[i].children = descend(generation[i].children.map((x) => ({id: x})));
           break;
         case 3:
           ms.splice(ms.indexOf(generation[i].id), 1);
-          generation[i].l_id = ms[0];
-          generation[i].r_id = ms[1];
-          generation[i].l_children = childrenOf(generation[i].id, generation[i].l_id);
-          generation[i].r_children = childrenOf(generation[i].id, generation[i].r_id);
+          generation[i].leftId = ms[0];
+          generation[i].rightId = ms[1];
+          generation[i].l_children = childrenOf(generation[i].id, generation[i].leftId);
+          generation[i].r_children = childrenOf(generation[i].id, generation[i].rightId);
           generation[i].l_children = descend(generation[i].l_children.map((x) => ({id: x})));
           generation[i].r_children = descend(generation[i].r_children.map((x) => ({id: x})));
           break;
@@ -160,10 +160,10 @@
   const computeWidth = function(children) {
     let width = 0;
     for (const child of children) {
-      if (child.r_id === undefined) { // no mates => no children
+      if (child.rightId === undefined) { // no mates => no children
         child.width = 1;
         width += child.width;
-      } else if (child.l_id === undefined) { // one mate (on right)
+      } else if (child.leftId === undefined) { // one mate (on right)
         child.width = Math.max(2, computeWidth(child.children));
         width += child.width;
       } else {  // two mates
@@ -220,9 +220,9 @@
 
       let actualw = 0;
       for (const n of t) {
-        if (n.r_id === undefined) { // single node
+        if (n.rightId === undefined) { // single node
           actualw += 1;
-        } else if (n.l_id === undefined) { // double node (one mate)
+        } else if (n.leftId === undefined) { // double node (one mate)
           actualw += 2;
         } else { // triple node (two mates)
           actualw += (n.l_width + n.r_width) / 2 + 1;
@@ -231,24 +231,24 @@
       const offset = (parentw - actualw) / 2;
       for (const n of t) {
         const p = personsById[n.id];
-        if (n.r_id === undefined) { // single node
+        if (n.rightId === undefined) { // single node
           drawJoin(parentx, parenty, left + offset, level);
           drawNode(p.given_name + ' ' + p.family_name, p.id, selectedPersonId, left + offset, level);
           drawnIds.push(p.id);
           left += n.width;
-        } else if (n.l_id === undefined) { // double node (one mate)
+        } else if (n.leftId === undefined) { // double node (one mate)
           drawJoin(parentx, parenty, left + offset, level);
           drawLine([left+offset, level, left+offset+1, level]);
           drawNode(p.given_name + ' ' + p.family_name, p.id, selectedPersonId, left + offset, level);
           drawnIds.push(p.id);
-          const p_r = personsById[n.r_id];
+          const p_r = personsById[n.rightId];
           drawNode(p_r.given_name + ' ' + p_r.family_name, selectedPersonId, p_r.id, left + offset + 1, level);
           drawnIds.push(p_r.id);
           drawSubtree(n.children, left, level + 1, left + offset + 0.5, level, n.width);
           left += n.width;
         } else { // triple node (two mates)
-          const p_r = personsById[n.r_id];
-          const p_l = personsById[n.l_id];
+          const p_r = personsById[n.rightId];
+          const p_l = personsById[n.leftId];
           const xl = (n.l_width - 1) / 2 + offset;
           const xr = (n.r_width - 1) / 2 + n.l_width + offset;
           const xm = (xl + xr) / 2;
@@ -258,8 +258,8 @@
           drawNode(p_r.given_name + ' ' + p_r.family_name, p_r.id, selectedPersonId, xr + 0.5, level);
           drawNode(p_l.given_name + ' ' + p_l.family_name, p_l.id, selectedPersonId, xl - 0.5, level);
           drawnIds.push(p.id);
-          drawnIds.push(p.r_id);
-          drawnIds.push(p.l_id);
+          drawnIds.push(p.rightId);
+          drawnIds.push(p.leftId);
           drawSubtree(n.l_children, left + offset, level + 1, xl, level, n.l_width);
           left += n.l_width;
           drawSubtree(n.r_children, left + offset, level + 1, xr, level, n.r_width);
