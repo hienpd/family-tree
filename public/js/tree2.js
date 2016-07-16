@@ -193,158 +193,158 @@
 
   let maxLevel = 0;
 
-  drawTree = function() {
-    // eslint-disable-next-line max-params
-    const drawNode = function(name, id, selectedId, x, y) {
-      const $node = $(`
-        <div class="node">
-        ${name}
-        <a class="edit btn-floating yellow" data-id="${id}">
-        <i class="tiny material-icons">mode_edit</i>
-        </a>
-        </div>`
-      );
+  // eslint-disable-next-line max-params
+  const drawNode = function(name, id, selectedId, x, y) {
+    const $node = $(`
+      <div class="node">
+      ${name}
+      <a class="edit btn-floating yellow" data-id="${id}">
+      <i class="tiny material-icons">mode_edit</i>
+      </a>
+      </div>`
+    );
 
-      if (id === selectedId) {
-        $node.addClass('selected');
-      }
-      $('.tree-div').append(
-        $node.css({
-          left: (x + 1) * gridSquareWidth - 50,
-          top: (y + 0) * gridSquareHeight - 50
-        })
-      );
-    };
+    if (id === selectedId) {
+      $node.addClass('selected');
+    }
+    $('.tree-div').append(
+      $node.css({
+        left: (x + 1) * gridSquareWidth - 50,
+        top: (y + 0) * gridSquareHeight - 50
+      })
+    );
+  };
 
-    const drawLine = function(coords) {
-      ctx.beginPath();
-      ctx.strokeStyle = '#fb4d3d';
-      ctx.lineWidth = 6;
-      ctx.moveTo((coords[0] + 1) * gridSquareWidth,
+  const drawLine = function(coords) {
+    ctx.beginPath();
+    ctx.strokeStyle = '#fb4d3d';
+    ctx.lineWidth = 6;
+    ctx.moveTo((coords[0] + 1) * gridSquareWidth,
+               (coords[1] + 0) * gridSquareHeight);
+    coords.splice(0, 2);
+    while (coords.length) {
+      ctx.lineTo((coords[0] + 1) * gridSquareWidth,
                  (coords[1] + 0) * gridSquareHeight);
       coords.splice(0, 2);
-      while (coords.length) {
-        ctx.lineTo((coords[0] + 1) * gridSquareWidth,
-                   (coords[1] + 0) * gridSquareHeight);
-        coords.splice(0, 2);
-      }
-      ctx.stroke();
-      ctx.closePath();
-    };
+    }
+    ctx.stroke();
+    ctx.closePath();
+  };
 
-    // eslint-disable-next-line max-params
-    const drawJoin = function(parentx, parenty, x, y) {
-      if (parentx === undefined) {
-        return;
-      }
-      const midy = (parenty + y) / 2;
+  // eslint-disable-next-line max-params
+  const drawJoin = function(parentx, parenty, x, y) {
+    if (parentx === undefined) {
+      return;
+    }
+    const midy = (parenty + y) / 2;
 
-      drawLine([parentx, parenty, parentx, midy, x, midy, x, y]);
-    };
+    drawLine([parentx, parenty, parentx, midy, x, midy, x, y]);
+  };
 
-    const drawnIds = [];
-    let selectedPersonId;
+  let selectedPersonId;
+  const drawnIds = [];
 
-    // eslint-disable-next-line max-params
-    const drawSubtree = function(tree, left, level, parentx, parenty, parentw) {
-      if (level > maxLevel) {
-        maxLevel = level;
-      }
+  // eslint-disable-next-line max-params
+  const drawSubtree = function(tree, left, level, parentx, parenty, parentw) {
+    if (level > maxLevel) {
+      maxLevel = level;
+    }
 
-      let actualw = 0;
+    let actualw = 0;
 
-      (function computeActualWidth() {
-        for (const node of tree) {
-          if (node.rightId === undefined) { // single node
-            actualw += 1;
-          }
-          else if (node.leftId === undefined) { // double node (one mate)
-            actualw += 2;
-          }
-          else { // triple node (two mates)
-            actualw += (node.leftWidth + node.rightWidth) / 2 + 1;
-          }
-        }
-      })();
-
-      const offset = (parentw - actualw) / 2;
-
-      const singleNode = function(node, person) {
-        drawJoin(parentx, parenty, left + offset, level);
-        drawNode(`${person.given_name} ${person.family_name}`, person.id,
-          selectedPersonId, left + offset, level
-        );
-        drawnIds.push(person.id);
-        left += node.width;
-      };
-
-      const doubleNode = function(node, person) {
-        drawJoin(parentx, parenty, left + offset, level);
-        drawLine([left + offset, level, left + offset + 1, level]);
-        drawNode(`${person.given_name} ${person.family_name}`, person.id,
-          selectedPersonId, left + offset, level
-        );
-        drawnIds.push(person.id);
-        const personRight = personsById[node.rightId];
-
-        drawNode(`${personRight.given_name} ${personRight.family_name}`,
-          selectedPersonId, personRight.id, left + offset + 1, level
-        );
-        drawnIds.push(personRight.id);
-        drawSubtree(node.children, left, level + 1, left + offset + 0.5,
-          level, node.width
-        );
-        left += node.width;
-      };
-
-      const tripleNode = function(node, person) {
-        const personRight = personsById[node.rightId];
-        const personLeft = personsById[node.leftId];
-        const xl = (node.leftWidth - 1) / 2 + offset;
-        const xr = (node.rightWidth - 1) / 2 + node.leftWidth + offset;
-        const xm = (xl + xr) / 2;
-
-        drawLine([xl - 0.5, level, xr + 0.5, level]);
-        drawJoin(parentx, parenty, xm, level);
-        drawNode(`${person.given_name} ${person.family_name}`, person.id,
-          selectedPersonId, xm, level
-        );
-        drawNode(`${personRight.given_name} ${personRight.family_name}`,
-          personRight.id, selectedPersonId, xr + 0.5, level
-        );
-        drawNode(`${personLeft.given_name} ${personLeft.family_name}`,
-          personLeft.id, selectedPersonId, xl - 0.5, level
-        );
-        (function pushIds() {
-          drawnIds.push(person.id);
-          drawnIds.push(person.rightId);
-          drawnIds.push(person.leftId);
-        })();
-        drawSubtree(node.leftChildren, left + offset, level + 1, xl, level,
-          node.leftWidth
-        );
-        left += node.leftWidth;
-        drawSubtree(node.rightChildren, left + offset, level + 1, xr, level,
-          node.rightWidth
-        );
-        left += node.rightWidth;
-      };
-
+    (function computeActualWidth() {
       for (const node of tree) {
-        const person = personsById[node.id];
-
         if (node.rightId === undefined) { // single node
-          singleNode(node, person);
+          actualw += 1;
         }
         else if (node.leftId === undefined) { // double node (one mate)
-          doubleNode(node, person);
+          actualw += 2;
         }
         else { // triple node (two mates)
-          tripleNode(node, person);
+          actualw += (node.leftWidth + node.rightWidth) / 2 + 1;
         }
       }
+    })();
+
+    const offset = (parentw - actualw) / 2;
+
+    const singleNode = function(node, person) {
+      drawJoin(parentx, parenty, left + offset, level);
+      drawNode(`${person.given_name} ${person.family_name}`, person.id,
+        selectedPersonId, left + offset, level
+      );
+      drawnIds.push(person.id);
+      left += node.width;
     };
 
+    const doubleNode = function(node, person) {
+      drawJoin(parentx, parenty, left + offset, level);
+      drawLine([left + offset, level, left + offset + 1, level]);
+      drawNode(`${person.given_name} ${person.family_name}`, person.id,
+        selectedPersonId, left + offset, level
+      );
+      drawnIds.push(person.id);
+      const personRight = personsById[node.rightId];
+
+      drawNode(`${personRight.given_name} ${personRight.family_name}`,
+        selectedPersonId, personRight.id, left + offset + 1, level
+      );
+      drawnIds.push(personRight.id);
+      drawSubtree(node.children, left, level + 1, left + offset + 0.5,
+        level, node.width
+      );
+      left += node.width;
+    };
+
+    const tripleNode = function(node, person) {
+      const personRight = personsById[node.rightId];
+      const personLeft = personsById[node.leftId];
+      const xl = (node.leftWidth - 1) / 2 + offset;
+      const xr = (node.rightWidth - 1) / 2 + node.leftWidth + offset;
+      const xm = (xl + xr) / 2;
+
+      drawLine([xl - 0.5, level, xr + 0.5, level]);
+      drawJoin(parentx, parenty, xm, level);
+      drawNode(`${person.given_name} ${person.family_name}`, person.id,
+        selectedPersonId, xm, level
+      );
+      drawNode(`${personRight.given_name} ${personRight.family_name}`,
+        personRight.id, selectedPersonId, xr + 0.5, level
+      );
+      drawNode(`${personLeft.given_name} ${personLeft.family_name}`,
+        personLeft.id, selectedPersonId, xl - 0.5, level
+      );
+      (function pushIds() {
+        drawnIds.push(person.id);
+        drawnIds.push(person.rightId);
+        drawnIds.push(person.leftId);
+      })();
+      drawSubtree(node.leftChildren, left + offset, level + 1, xl, level,
+        node.leftWidth
+      );
+      left += node.leftWidth;
+      drawSubtree(node.rightChildren, left + offset, level + 1, xr, level,
+        node.rightWidth
+      );
+      left += node.rightWidth;
+    };
+
+    for (const node of tree) {
+      const person = personsById[node.id];
+
+      if (node.rightId === undefined) { // single node
+        singleNode(node, person);
+      }
+      else if (node.leftId === undefined) { // double node (one mate)
+        doubleNode(node, person);
+      }
+      else { // triple node (two mates)
+        tripleNode(node, person);
+      }
+    }
+  };
+
+  drawTree = function() {
     const $canvas = $('.tree-div canvas');
 
     $('.tree-div').empty().append($canvas);
