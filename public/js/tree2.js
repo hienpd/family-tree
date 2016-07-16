@@ -217,6 +217,7 @@
     };
 
     const drawnIds = [];
+    let selectedPersonId;
 
     const drawSubtree = function(tree, left, level, parentx, parenty, parentw) {
       if (level > maxLevel) {
@@ -304,8 +305,6 @@
     $('.tree-div').empty().append($canvas);
 
     ctx.clearRect(0, -10, canvas.width, canvas.height); // origin is 10px down
-
-    let selectedPersonId;
 
     const userId =
       Number.parseInt(/family-tree-userId=(\d+)/.exec(document.cookie)[1]);
