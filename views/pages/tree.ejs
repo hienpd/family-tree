@@ -6,36 +6,26 @@
     <header>
       <% include ../partials/nav_logout.ejs %>
     </header>
-
     <main class="tree">
       <a id="add-button" class="waves-effect waves-light btn-large" href="/add_new">Add New Family Member</a>
       <div class="tree-div">
         <canvas id="canvas"></canvas>
       </div>
       <div class="container">
-
-
-
-        <!-- Modal Trigger -->
-          <!-- <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Edit</a> -->
-
-          <!-- Modal Structure -->
-          <div id="modal1" class="modal">
-            <div class="modal-content">
-              <h4>Edit Family Member</h4>
-              <p>A bunch of text</p>
-            </div>
-            <div class="modal-footer">
-              <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">OK</a>
-            </div>
+        <div id="modal1" class="modal">
+          <div class="modal-content">
+            <h4>Edit Family Member</h4>
+            <p>A bunch of text</p>
           </div>
-
+          <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">OK</a>
+          </div>
+        </div>
       </div>
     </main>
-
     <% include ../partials/footer.ejs %>
-    <script src="/js/tree.js"></script>
-    <script src="/js/tree2.js"></script>
+      <script src="/js/tree.js"></script>
+      <script src="/js/tree2.js"></script>
   </body>
 
 </html>

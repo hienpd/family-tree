@@ -3,68 +3,60 @@
 <% include ../partials/head.ejs %>
 
   <body>
-
     <header>
       <% include ../partials/nav_logout.ejs %>
     </header>
-
     <main>
       <div class="container">
-
-      <div class="row">
-        <div class="col s12 m12">
-          <div class="card white darken-1">
-            <div class="card-content black-text">
-
-              <span class="card-title">Your Details</span>
-
-              <div class="row">
-                <div class="input-field col s4">
-                  <input id="given-name" type="text" class="validate">
-                  <label for="given-name">Given Name</label>
+        <div class="row">
+          <div class="col s12 m12">
+            <div class="card white darken-1">
+              <div class="card-content black-text">
+                <span class="card-title">Your Details</span>
+                <div class="row">
+                  <div class="input-field col s4">
+                    <input id="given-name" type="text" class="validate">
+                    <label for="given-name">Given Name</label>
+                  </div>
+                  <div class="input-field col s4">
+                    <input id="middle-name" type="text" class="validate">
+                    <label for="middle-name">Middle Name</label>
+                  </div>
+                  <div class="input-field col s4">
+                    <input id="family-name" type="text" class="validate">
+                    <label for="family-name">Family Name</label>
+                  </div>
                 </div>
-                <div class="input-field col s4">
-                  <input id="middle-name" type="text" class="validate">
-                  <label for="middle-name">Middle Name</label>
+                <div class="row">
+                  <div class="input-field col s6">
+                    <input type="date" class="datepicker" id="dob">
+                    <label for="dob">Date of Birth</label>
+                  </div>
+                  <div class="input-field col s6">
+                    <select>
+                      <option value="" disabled selected>Gender</option>
+                      <option value="f">Female</option>
+                      <option value="m">Male</option>
+                      <option value="a">Agender</option>
+                      <option value="i">Intersex</option>
+                      <option value="p">Pangender</option>
+                      <option value="t">Transgender/Transsexual</option>
+                      <option value="s">Two-Spirit</option>
+                    </select>
+                    <label>Gender</label>
+                  </div>
                 </div>
-                <div class="input-field col s4">
-                  <input id="family-name" type="text" class="validate">
-                  <label for="family-name">Family Name</label>
+                <div class="row">
+                  <a class="waves-effect waves-light btn-large">Save</a>
                 </div>
-              </div>
-
-              <div class="row">
-                <div class="input-field col s6">
-                  <input type="date" class="datepicker" id="dob">
-                  <label for="dob">Date of Birth</label>
-                </div>
-                <div class="input-field col s6">
-                  <select>
-                    <option value="" disabled selected>Gender</option>
-                    <option value="f">Female</option>
-                    <option value="m">Male</option>
-                    <option value="a">Agender</option>
-                    <option value="i">Intersex</option>
-                    <option value="p">Pangender</option>
-                    <option value="t">Transgender/Transsexual</option>
-                    <option value="s">Two-Spirit</option>
-                  </select>
-                  <label>Gender</label>
-                </div>
-              </div>
-
-              <div class="row">
-                <a class="waves-effect waves-light btn-large">Save</a>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </main>
-
     <% include ../partials/footer.ejs %>
-    <script src="js/edit.js"></script>
+      <script src="js/edit.js"></script>
   </body>
 
 </html>

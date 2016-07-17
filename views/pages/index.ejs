@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
-  <% include ../partials/head.ejs %>
+<html lang="en">
+<% include ../partials/head.ejs %>
+
   <body>
     <header>
       <% include ../partials/nav_login.ejs %>
@@ -14,7 +15,7 @@
                 <div id="card-hero" class="card center-align">
                   <div class="card-content green-text">
                     <p class="card-title">Welcome to Baobab!</p>
-                    <img id="logo-hero" src="img/baobab_logo_teal.png">
+                    <img id="logo-hero" src="img/baobab_logo_teal.png" alt="Baobab">
                     <p class="center-align">The Baobab is known as the Tree of Life in Africa. Create an account and start building your family tree today.</p>
                   </div>
                   <div class="card-action">
@@ -28,6 +29,7 @@
       </div>
     </main>
     <% include ../partials/footer.ejs %>
-    <script src="/js/index.js"></script>
+      <script src="/js/index.js"></script>
   </body>
+
 </html>
