@@ -1,16 +1,18 @@
+/* globals before:false */
+/* globals beforeEach:false */
 'use strict';
 
 process.env.NODE_ENV = 'test';
 
 const assert = require('chai').assert;
-const {suite, test} = require('mocha');
-const bcrypt = require('bcrypt');
+const { suite, test } = require('mocha');
+const bcryptPromise = require('bcrypt-as-promised');
 const request = require('supertest');
 const knex = require('../knex');
 const server = require('../server');
 
 suite('part3 routes users', () => {
-  before(function(done) {
+  before((done) => {
     knex.migrate.latest()
       .then(() => {
         done();
@@ -20,7 +22,7 @@ suite('part3 routes users', () => {
       });
   });
 
-  beforeEach(function(done) {
+  beforeEach((done) => {
     knex('users')
       .del()
       .then(() => {
@@ -39,11 +41,11 @@ suite('part3 routes users', () => {
       .set('Content-Type', 'application/json')
       .send({
         email: 'john.siracusa@gmail.com',
-        password: password
+        password
       })
       .expect('Content-Type', /plain/)
       .expect(200, 'OK')
-      .end((httpErr, res) => {
+      .end((httpErr, _res) => {
         if (httpErr) {
           return done(httpErr);
         }
@@ -62,19 +64,14 @@ suite('part3 routes users', () => {
               email: 'john.siracusa@gmail.com'
             });
 
-            bcrypt.compare(password, hashed_password, (compErr, isMatch) => {
-              if (compErr) {
-                return done(compErr);
-              }
-
-              assert.isTrue(isMatch, "passwords don't match");
-
-              done();
-            });
+            return bcryptPromise.compare(password, hashed_password);
+          })
+          .then(() => {
+            done();
           })
           .catch((dbErr) => {
             done(dbErr);
           });
-      })
+      });
   });
 });

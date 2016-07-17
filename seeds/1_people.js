@@ -2,15 +2,15 @@
 
 exports.seed = function(knex) {
   return knex('people').del()
-    .then(() => {
-      return knex('people').insert([{
+    .then(() =>
+      knex('people').insert([{
         id: 1,
         given_name: 'Bob',
         family_name: 'Belcher',
         dob: new Date(1972, 2, 16),
         created_at: new Date("2016-07-08T03:33:59.857Z"),
         updated_at: new Date("2016-07-08T03:33:59.857Z"),
-        gender: 'm',
+        gender: 'm'
       }, {
         id: 2,
         given_name: 'Linda',
@@ -36,7 +36,7 @@ exports.seed = function(knex) {
         dob: new Date(2005, 3, 5),
         created_at: new Date("2016-07-08T03:33:59.857Z"),
         updated_at: new Date("2016-07-08T03:33:59.857Z"),
-        gender: 'm',
+        gender: 'm'
       }, {
         id: 5,
         given_name: 'Louise',
@@ -45,11 +45,11 @@ exports.seed = function(knex) {
         created_at: new Date("2016-07-08T03:33:59.857Z"),
         updated_at: new Date("2016-07-08T03:33:59.857Z"),
         gender: 'f'
-      }]);
-    })
-    .then(() => {
-      return knex.raw(
+      }])
+    )
+    .then(() =>
+      knex.raw(
         "SELECT setval('people_id_seq', (SELECT MAX(id) FROM people));"
-      );
-    });
+      )
+    );
 };

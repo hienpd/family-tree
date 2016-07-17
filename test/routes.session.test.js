@@ -1,16 +1,18 @@
+/* globals before:false */
+/* globals beforeEach:false */
+/* eslint-disable no-sync */
 'use strict';
 
 process.env.NODE_ENV = 'test';
 
-const assert = require('chai').assert;
-const {suite, test} = require('mocha');
+const { suite, test } = require('mocha');
 const bcrypt = require('bcrypt');
 const request = require('supertest');
 const knex = require('../knex');
 const server = require('../server');
 
 suite('routes session', () => {
-  before(function(done) {
+  before((done) => {
     knex.migrate.latest()
       .then(() => {
         done();
@@ -20,7 +22,7 @@ suite('routes session', () => {
       });
   });
 
-  beforeEach(function(done) {
+  beforeEach((done) => {
     knex('users')
       .del()
       .then(() => {
@@ -45,9 +47,9 @@ suite('routes session', () => {
           .set('Content-Type', 'application/json')
           .send({
             email: 'john.siracusa@gmail.com',
-            password: password
+            password
           })
-          .expect('set-cookie', /loggedIn=true; Path=\//)
+          .expect('set-cookie', /family-tree-userId=2; Path=\//)
           .expect('set-cookie', /family_tree=[a-zA-Z0-9=]*; path=\//)
           .expect('set-cookie', /family_tree.sig=[a-zA-Z0-9=\-_]*; path=\//)
           .expect('Content-Type', /plain/)
@@ -72,7 +74,7 @@ suite('routes session', () => {
           .set('Content-Type', 'application/json')
           .send({
             email: 'bad.email@gmail.com',
-            password: password
+            password
           })
           .expect('Content-Type', /text/)
           .expect(401, 'Unauthorized', done);
@@ -107,7 +109,7 @@ suite('routes session', () => {
   test('DELETE /session', (done) => {
     request(server)
       .delete('/session')
-      .expect('set-cookie', /loggedIn=; Path=\//)
+      .expect('set-cookie', /family-tree-userId=; Path=\//)
       .expect('set-cookie', /family_tree=; path=\//)
       .expect('set-cookie', /family_tree.sig=[a-zA-Z0-9=\-_]*; path=\//)
       .expect('Content-Type', /plain/)

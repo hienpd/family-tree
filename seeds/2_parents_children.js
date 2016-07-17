@@ -2,8 +2,8 @@
 
 exports.seed = function(knex) {
   return knex('parents_children').del()
-    .then(() => {
-      return knex('parents_children').insert([{
+    .then(() =>
+      knex('parents_children').insert([{
         id: 1,
         child_id: 3,
         parent_id: 1
@@ -27,11 +27,12 @@ exports.seed = function(knex) {
         id: 6,
         child_id: 5,
         parent_id: 2
-      }]);
-    })
-    .then(() => {
-      return knex.raw(
-        "SELECT setval('parents_children_id_seq', (SELECT MAX(id) FROM parents_children));"
-      );
-    });
+      }])
+    )
+    .then(() =>
+      knex.raw(
+        `SELECT setval('parents_children_id_seq',
+        (SELECT MAX(id) FROM parents_children));`
+      )
+    );
 };

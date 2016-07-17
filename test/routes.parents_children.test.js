@@ -1,8 +1,9 @@
+/* global before: false */
+/* global beforeEach: false */
 'use strict';
 
 process.env.NODE_ENV = 'test';
 
-const assert = require('chai').assert;
 const {
   suite,
   test
@@ -12,7 +13,7 @@ const request = require('supertest');
 const server = require('../server');
 
 suite('parents_children route', () => {
-  before(function(done) {
+  before((done) => {
     knex.migrate.latest()
       .then(() => {
         done();
@@ -22,7 +23,7 @@ suite('parents_children route', () => {
       });
   });
 
-  beforeEach(function(done) {
+  beforeEach((done) => {
     knex.seed.run()
       .then(() => {
         done();
@@ -36,18 +37,17 @@ suite('parents_children route', () => {
     request(server)
       .post('/parents_children')
       .send({
-        parent_id: 12,
-        child_id: 14
+        parent_id: null,
+        child_id: 5
       })
       .expect((res) => {
         delete res.body.created_at;
         delete res.body.updated_at;
       })
       .expect(200, {
-        id: 18,
-        parent_id: 12,
-        child_id: 14
+        id: 7,
+        parent_id: null,
+        child_id: 5
       }, done);
   });
-
 });
