@@ -39,7 +39,14 @@ Laptops.
 
 ### What did you learn from working with a partner?
 
-Pair programming,
+Hien:
+
+I learned a different style of working from my partner, and that taking the time to plan out and test a project ultimately saves a lot of time in the end.
+Michael:
+
+I learned (or attempted) to verbalize my thoughts in order to stay on the same page as my partner. I also
+learned that git issue tracking is very useful, and that no matter how small you might think your project scope
+is at the beginning, by the end you'll be jettisoning planned features left and right.
 
 ### What was the biggest challenge you had to overcome?
 
