@@ -28,13 +28,16 @@ The system displays a visual representation of the family tree.
 ### What web APIs did it use?
 
 Our own RESTful API to manage people, relationships, and users.
-Postmark email API.
+Postmark API to email invitations.
 
 ### What technologies did it use?
 
 HTML/CSS/JavaScript; jQuery, Materialize, HTML canvas.
+
 Node.js, Express, Postgres, Knex.
+
 Chai, Mocha, Supertest.
+
 Laptops.
 
 ### What did you learn from working with a partner?
@@ -42,6 +45,7 @@ Laptops.
 Hien:
 
 I learned a different style of working from my partner, and that taking the time to plan out and test a project ultimately saves a lot of time in the end.
+
 Michael:
 
 I learned (or attempted) to verbalize my thoughts in order to stay on the same page as my partner. I also
