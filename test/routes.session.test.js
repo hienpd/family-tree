@@ -47,7 +47,7 @@ suite('routes session', () => {
             email: 'john.siracusa@gmail.com',
             password: password
           })
-          .expect('set-cookie', /loggedIn=true; Path=\//)
+          .expect('set-cookie', /family-tree-userId=2; Path=\//)
           .expect('set-cookie', /family_tree=[a-zA-Z0-9=]*; path=\//)
           .expect('set-cookie', /family_tree.sig=[a-zA-Z0-9=\-_]*; path=\//)
           .expect('Content-Type', /plain/)
@@ -107,7 +107,7 @@ suite('routes session', () => {
   test('DELETE /session', (done) => {
     request(server)
       .delete('/session')
-      .expect('set-cookie', /loggedIn=; Path=\//)
+      .expect('set-cookie', /family-tree-userId=; Path=\//)
       .expect('set-cookie', /family_tree=; path=\//)
       .expect('set-cookie', /family_tree.sig=[a-zA-Z0-9=\-_]*; path=\//)
       .expect('Content-Type', /plain/)
