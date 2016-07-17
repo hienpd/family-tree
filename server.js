@@ -1,7 +1,9 @@
 'use strict';
 
 if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config({ silent: true });
+  require('dotenv').config({
+    silent: true
+  });
 }
 
 const express = require('express');
@@ -48,9 +50,10 @@ app.use(cookieSession({
 
 app.get('/', (req, res) => {
   if (req.session && req.session.userId) {
-    res.render('pages/tree', {email: req.session.email});
-  }
-  else {
+    res.render('pages/tree', {
+      email: req.session.email
+    });
+  } else {
     res.render('pages/index');
   }
 });
@@ -60,19 +63,31 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/tree', checkAuth, (req, res) => {
-  res.render('pages/tree', {email: req.session.email});
+  res.render('pages/tree', {
+    email: req.session.email
+  });
 });
 
 app.get('/tree2', checkAuth, (req, res) => {
-  res.render('pages/tree2', {email: req.session.email});
+  res.render('pages/tree2', {
+    email: req.session.email
+  });
 });
 
 app.get('/add_self', checkAuth, (req, res) => {
-  res.render('pages/add', {email: req.session.email, title: 'Add Yourself', isSelf: true});
+  res.render('pages/add', {
+    email: req.session.email,
+    title: 'Add Yourself',
+    isSelf: true
+  });
 });
 
 app.get('/add_new', checkAuth, (req, res) => {
-  res.render('pages/add', {email: req.session.email, title: 'Add New Family Member', isSelf: false});
+  res.render('pages/add', {
+    email: req.session.email,
+    title: 'Add New Family Member',
+    isSelf: false
+  });
 });
 
 app.use(express.static(path.join('public')));

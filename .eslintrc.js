@@ -1,7 +1,9 @@
 module.exports = {
   extends: [
-    'ryansobol/node',
-    'ryansobol/es6'
+    'ryansobol/materialize',
+    'ryansobol/es6',
+    'ryansobol/browser',
+    'ryansobol/jquery'
   ]
 
   // rules: {
