@@ -10,7 +10,7 @@
     "heroku-postbuild": "knex migrate:latest",
     "nf": "nf start",
     "lintroutes": "eslint routes",
-    "linttests": "eslint tests",
+    "linttests": "eslint test",
     "lint": "eslint public/js"
   },
   "keywords": [
