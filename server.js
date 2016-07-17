@@ -20,14 +20,14 @@ const email = require('./routes/email');
 
 const checkAuth = function(req, res, next) {
   if (!req.session.userId) {
-    console.log('You are not allowed!');
     return res.sendStatus(401);
   }
 
   next();
-}
+};
 
 const app = express();
+
 module.exports = app;
 
 app.set('view engine', 'ejs');
@@ -36,6 +36,7 @@ app.disable('x-powered-by');
 
 if (process.env.NODE_ENV !== 'test') {
   const morgan = require('morgan');
+
   app.use(morgan('short'));
 }
 
@@ -48,7 +49,7 @@ app.use(cookieSession({
 
 app.get('/', (req, res) => {
   if (req.session && req.session.userId) {
-    res.render('pages/tree', {email: req.session.email});
+    res.render('pages/tree', { email: req.session.email });
   }
   else {
     res.render('pages/index');
@@ -60,19 +61,23 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/tree', checkAuth, (req, res) => {
-  res.render('pages/tree', {email: req.session.email});
+  res.render('pages/tree', { email: req.session.email });
 });
 
 app.get('/tree2', checkAuth, (req, res) => {
-  res.render('pages/tree2', {email: req.session.email});
+  res.render('pages/tree2', { email: req.session.email });
 });
 
 app.get('/add_self', checkAuth, (req, res) => {
-  res.render('pages/add', {email: req.session.email, title: 'Add Yourself', isSelf: true});
+  res.render('pages/add', {
+    email: req.session.email, title: 'Add Yourself', isSelf: true
+  });
 });
 
 app.get('/add_new', checkAuth, (req, res) => {
-  res.render('pages/add', {email: req.session.email, title: 'Add New Family Member', isSelf: false});
+  res.render('pages/add', {
+    email: req.session.email, title: 'Add New Family Member', isSelf: false
+  });
 });
 
 app.use(express.static(path.join('public')));
@@ -87,20 +92,17 @@ app.use((_req, res) => {
   res.sendStatus(404);
 });
 
-app.use((err, _req, res, _next) => {
+app.use((err, _req, res, _next) => { // eslint-disable-line max-params
   if (err.status) {
-    console.error(err);
     return res.status(err.status).send(err.message);
   }
 
-  console.error(err.stack);
   res.sendStatus(500);
 });
 
 app.listen(port, () => {
   if (process.env.NODE_ENV !== 'test') {
-
-    console.log('Listening on port', port);
+    console.log('Listening on port', port); // eslint-disable-line no-console
   }
 });
 
