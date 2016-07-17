@@ -11,7 +11,8 @@
     "nf": "nf start",
     "lintroutes": "eslint routes",
     "linttests": "eslint test",
-    "lint": "eslint public/js"
+    "lintclient": "eslint public/js",
+    "lint": "eslint **/*.js"
   },
   "keywords": [
     "postgres"
