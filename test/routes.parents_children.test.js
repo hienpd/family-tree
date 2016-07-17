@@ -36,17 +36,17 @@ suite('parents_children route', () => {
     request(server)
       .post('/parents_children')
       .send({
-        parent_id: 12,
-        child_id: 14
+        parent_id: null,
+        child_id: 5
       })
       .expect((res) => {
         delete res.body.created_at;
         delete res.body.updated_at;
       })
       .expect(200, {
-        id: 18,
-        parent_id: 12,
-        child_id: 14
+        id: 7,
+        parent_id: null,
+        child_id: 5
       }, done);
   });
 
