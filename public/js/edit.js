@@ -1,29 +1,32 @@
-'use strict';
+/* eslint camelcase: "off" */
 
-$('#logout').click((event) => {
-  var $xhr = $.ajax({
-    method: 'DELETE',
-    url: '/session'
+(function() {
+  'use strict';
+
+  $('#logout').click(() => {
+    const $xhr = $.ajax({
+      method: 'DELETE',
+      url: '/session'
+    });
+
+    $xhr.done(() => {
+      window.location.href = '/';
+    });
+
+    $xhr.fail(() => {
+      Materialize.toast('Unable to log out!', 4000);
+    });
   });
 
-  $xhr.done(function() {
-    window.location.href = '/';
-  });
-
-  $xhr.fail(function(err) {
-    Materialize.toast('Unable to log out!', 4000);
-    console.err(err);
-  });
-});
-
-$(document).ready(function(){
+  $(document).ready(() => {
     $('.modal-trigger').leanModal();
-});
+  });
 
-$('.datepicker').pickadate({
-  selectMonths: true, // Creates a dropdown to control month
-  selectYears: 150 // Creates a dropdown of 15 years to control year
-});
-$(document).ready(function() {
-  $('select').material_select();
-});
+  $('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 150 // Creates a dropdown of 15 years to control year
+  });
+  $(document).ready(() => {
+    $('select').material_select();
+  });
+})();
