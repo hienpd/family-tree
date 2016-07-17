@@ -1,3 +1,6 @@
+/* eslint camelcase: "off" */
+/* eslint max-statements: "off" */
+
 'use strict';
 
 if (process.env.NODE_ENV !== 'production') {
