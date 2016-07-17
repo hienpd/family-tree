@@ -4,9 +4,9 @@ module.exports = {
     'ryansobol/es6',
     'ryansobol/browser',
     'ryansobol/jquery'
-  ]
+  ],
 
-  // rules: {
-  //   'rule-name': 'off'  // 'error'
-  // }
+  rules: {
+    strict: 'off'  // 'error'
+  }
 };

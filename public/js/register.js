@@ -58,7 +58,8 @@
     $xhr.fail((err) => {
       if (err.status === 409) {
         Materialize.toast('Email already registered! Please log in.', 4000);
-      } else {
+      }
+      else {
         Materialize.toast('Please enter a valid email address.', 4000);
       }
     });
