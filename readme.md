@@ -8,7 +8,11 @@ For entertainment purposes only.
 
 Hien Dang and Michael Park
 
-### What problem does this project solve?
+### What's the name of your project?
+
+Baobab.
+
+### What problem does it solve?
 
 Determining how family members are related.
 
@@ -16,26 +20,27 @@ Determining how family members are related.
 
 Everyone. Especially Hien and other people with large families.
 
-### How does this project solve this problem?
+### How does your project solve this problem?
 
 Users enter information about their family members and the parent-child relationships between them.
 The system displays a visual representation of the family tree.
 
-### What inputs does it use?
+### What web APIs did it use?
 
-People (name, gender, dob). Relationships (parent-child). Users (email/password)
-
-### What outputs does it produce?
-
-A family tree.
-
-### What web APIs does it use?
-
-Postmark email API.
 Our own RESTful API to manage people, relationships, and users.
+Postmark email API.
 
-### What technologies does it use?
+### What technologies did it use?
 
 HTML/CSS/JavaScript; jQuery, Materialize, HTML canvas.
-Node.js, Express, Postgres.
+Node.js, Express, Postgres, Knex.
+Chai, Mocha, Supertest.
 Laptops.
+
+### What did you learn from working with a partner?
+
+Pair programming,
+
+### What was the biggest challenge you had to overcome?
+
+Drawing the family tree.
