@@ -25,8 +25,8 @@ router.get('/people/:id', (req, res, next) => {
     .then((person) => {
       if (!person) {
         const err = new Error(`/people/${req.params.id} not found`);
-        err.status = 404;
 
+        err.status = 404;
         throw err;
       }
       res.send(person);
