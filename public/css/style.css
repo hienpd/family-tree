@@ -89,8 +89,7 @@ footer.page-footer {
   color: #EAC435;
 }
 
-.input-field .prefix ~ input,
-.input-field .prefix ~ textarea {
+.input-field .prefix~ input, .input-field .prefix~ textarea {
   margin-left: 0.5rem;
 }
 
