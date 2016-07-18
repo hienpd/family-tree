@@ -4,10 +4,21 @@
 (function() {
   'use strict';
 
-  const canvas = $('#canvas')[0];
-  const ctx = canvas.getContext('2d');
   const gridSquareWidth = 120;
   const gridSquareHeight = 150;
+
+  const canvas = $('#canvas')[0];
+  const ctx = canvas.getContext('2d');
+
+  const resize = function() {
+    var div = $('.tree-div')[0];
+    console.log(div.clientWidth, div.clientHeight);
+    canvas.width = div.clientWidth;
+    canvas.height = gridSquareHeight * (4 - 0.3);
+    window.loadTreePage();
+  };
+
+  window.addEventListener('resize', resize);
 
   let persons;
   let parentRels;
@@ -17,6 +28,7 @@
   let drawTree; // eslint-disable-line prefer-const
 
   window.loadTreePage = function() {
+    console.log('loadtreepage');;;
     $.ajax({
       method: 'GET',
       url: '/people'
@@ -41,7 +53,7 @@
     });
   };
 
-  window.loadTreePage();
+  resize();
 
   let personsById;
   let materix;
@@ -214,7 +226,7 @@
     $('.tree-div').append(
       $node.css({
         left: (x + 1) * gridSquareWidth - 50,
-        top: (y + 0) * gridSquareHeight - 50
+        top: (y + 0) * gridSquareHeight - 50 + 10
       })
     );
   };
@@ -224,11 +236,11 @@
     ctx.strokeStyle = '#fb4d3d';
     ctx.lineWidth = 6;
     ctx.moveTo((coords[0] + 1) * gridSquareWidth,
-               (coords[1] + 0) * gridSquareHeight);
+               (coords[1] + 0) * gridSquareHeight + 10);
     coords.splice(0, 2);
     while (coords.length) {
       ctx.lineTo((coords[0] + 1) * gridSquareWidth,
-                 (coords[1] + 0) * gridSquareHeight);
+                 (coords[1] + 0) * gridSquareHeight + 10);
       coords.splice(0, 2);
     }
     ctx.stroke();
@@ -359,7 +371,7 @@
 
     $('.tree-div').empty().append($canvas);
 
-    ctx.clearRect(0, -10, canvas.width, canvas.height); // origin is 10px down
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const userId =
       Number.parseInt(/family-tree-userId=(\d+)/.exec(document.cookie)[1]);
@@ -378,7 +390,7 @@
     computeWidth(top);
 
     // eslint-disable-next-line no-undefined
-    drawSubtree(top, (11 - top.width) / 2, 0, undefined, undefined, top.width);
+    drawSubtree(top, (canvas.width / gridSquareWidth - 1 - top.width) / 2, 0, undefined, undefined, top.width);
 
     (function drawUnconnectedNodes() {
       let x = 0;
@@ -394,10 +406,6 @@
       }
     })();
   };
-
-  canvas.width = 1440;
-  canvas.height = 550;
-  ctx.translate(0, 10);
 
   $('.tree-div').on('click', 'a.edit', popUpEditModal);
 })();

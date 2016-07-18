@@ -22,12 +22,14 @@ main {
 
 .tree-div {
   position: relative;
-  margin-top: 3rem;
+  margin-top: 0rem;
   width: 100%;
+  padding: 0;
 }
 
 main.tree {
   background: rgba(255, 255, 255, 0.85);
+  margin-bottom: -2rem;
 }
 
 .node {
