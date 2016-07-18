@@ -183,6 +183,10 @@
       })
       .then((people) => { // Populate dropdown parent menu
         for (const peep of people) {
+          if (person.id === peep.id) { // the person being edited should not
+                                       // be in the list of their parents
+            continue;
+          }
           $('#choose-parents').append(
             $('<option></option>').val(peep.id)
               .html(`${peep.given_name} ${peep.family_name}`));
