@@ -9,9 +9,6 @@
     "start": "node server.js",
     "heroku-postbuild": "knex migrate:latest",
     "nf": "nf start",
-    "lintroutes": "eslint routes",
-    "linttests": "eslint test",
-    "lintclient": "eslint public/js",
     "lint": "eslint *.js"
   },
   "keywords": [

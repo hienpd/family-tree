@@ -15,7 +15,7 @@ router.post('/email', (req, res, next) => {
       TextBody: 'Dude. Plz reply.'
     },
     headers: {
-      'X-Postmark-Server-Token': '76b40eca-7358-459b-8658-217bad4f9eb4'
+      'X-Postmark-Server-Token': process.env.POSTMARK_TOKEN
 
     },
     json: true // Automatically stringifies the body to JSON

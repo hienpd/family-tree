@@ -33,8 +33,6 @@ const checkAuth = function(req, res, next) {
 
 const app = express();
 
-module.exports = app;
-
 app.set('view engine', 'ejs');
 
 app.disable('x-powered-by');
