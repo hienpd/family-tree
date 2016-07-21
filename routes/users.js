@@ -17,10 +17,10 @@ router.post('/users', ev(validations.post), (req, res, next) => {
   .first()
   .then((exists) => {
     if (exists) {
-      return res
-        .status(409)
-        .set('Content-Type', 'text/plain')
-        .send('Email already exists');
+      const err = new Error ('EMAIL ALREADY EXISTS');
+
+      err.status = 409;
+      throw err;
     }
 
     return bcryptPromise.hash(req.body.password, 12);
