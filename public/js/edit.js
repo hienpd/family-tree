@@ -4,16 +4,14 @@
   'use strict';
 
   $('#logout').click(() => {
-    const $xhr = $.ajax({
+    $.ajax({
       method: 'DELETE',
       url: '/session'
-    });
-
-    $xhr.done(() => {
+    })
+    .then(() => {
       window.location.href = '/';
-    });
-
-    $xhr.fail(() => {
+    })
+    .catch(() => {
       Materialize.toast('Unable to log out!', 4000);
     });
   });
