@@ -38,7 +38,7 @@ router.patch('/parents_children/:c_id', (req, res, next) => {
         .insert(req.body, '*')
     )
     .then((parents_children) => {
-      res.send(parents_children[0]);
+      res.send(parents_children);
     })
     .catch((err) => {
       next(err);

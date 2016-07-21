@@ -14,7 +14,9 @@ exports.up = function(knex) {
     table.date('dob');
     table.string('gender');
     table.timestamps(true, true);
-    table.integer('user_id');
+    table.integer('user_id')
+      .references('id')
+      .inTable('users');
   });
 };
 
