@@ -7,6 +7,8 @@
   const gridSquareWidth = 120;
   const gridSquareHeight = 150;
   const maxPeople = 30;
+  const nodeRadius = 50; // Node size is 100 x 100 set in CSS
+  const yOffset = 10; // Prevent line clipping against canvas
 
   const canvas = $('#canvas')[0];
   const ctx = canvas.getContext('2d');
@@ -224,8 +226,8 @@
     }
     $('.tree-div').append(
       $node.css({
-        left: (x + 1) * gridSquareWidth - 50,
-        top: (y + 0) * gridSquareHeight - 50 + 10
+        left: (x + 1) * gridSquareWidth - nodeRadius,
+        top: (y + 0) * gridSquareHeight - nodeRadius + yOffset
       })
     );
   };
@@ -235,11 +237,11 @@
     ctx.strokeStyle = '#fb4d3d';
     ctx.lineWidth = 6;
     ctx.moveTo((coords[0] + 1) * gridSquareWidth,
-               (coords[1] + 0) * gridSquareHeight + 10);
+               (coords[1] + 0) * gridSquareHeight + yOffset);
     coords.splice(0, 2);
     while (coords.length) {
       ctx.lineTo((coords[0] + 1) * gridSquareWidth,
-                 (coords[1] + 0) * gridSquareHeight + 10);
+                 (coords[1] + 0) * gridSquareHeight + yOffset);
       coords.splice(0, 2);
     }
     ctx.stroke();
