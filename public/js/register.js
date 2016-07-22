@@ -83,7 +83,7 @@
       return Materialize.toast('Please enter a password.', 4000);
     }
 
-    const $xhr = $.ajax({
+    $.ajax({
       method: 'POST',
       url: '/session/',
       contentType: 'application/json',
@@ -91,13 +91,11 @@
         email,
         password
       })
-    });
-
-    $xhr.done(() => {
+    })
+    .then(() => {
       window.location.href = '/tree';
-    });
-
-    $xhr.fail(() => {
+    })
+    .catch(() => {
       Materialize.toast('Unable to log in!', 4000);
     });
   });
