@@ -62,7 +62,7 @@
   .then((data) => {
     for (const person of data) {
       $('#choose-parents').append(
-        $('<option></option>').val(person.id).html(`${person.given_name}
+        $('<option></option>').val(person.id).text(`${person.given_name}
            ${person.family_name}`));
     }
     $('select').material_select();
