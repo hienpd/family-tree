@@ -6,6 +6,7 @@
 
   const gridSquareWidth = 120;
   const gridSquareHeight = 150;
+  const maxPeople = 30;
 
   const canvas = $('#canvas')[0];
   const ctx = canvas.getContext('2d');
@@ -64,7 +65,7 @@
 
     // init materix
     materix = [];
-    for (let i = 0; i < 30; ++i) { // some # > max id
+    for (let i = 0; i < maxPeople; ++i) { // some # > max id
       materix.push([]);
     }
 
@@ -82,7 +83,7 @@
     id = Number(id);
     const res = [];
 
-    for (let j = 0; j < 30; ++j) {
+    for (let j = 0; j < maxPeople; ++j) {
       if (materix[id][j]) {
         res.push(j);
       }
