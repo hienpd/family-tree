@@ -12,7 +12,6 @@
 
   const resize = function() {
     var div = $('.tree-div')[0];
-    console.log(div.clientWidth, div.clientHeight);
     canvas.width = div.clientWidth;
     canvas.height = gridSquareHeight * (4 - 0.3);
     window.loadTreePage();
@@ -28,7 +27,6 @@
   let drawTree; // eslint-disable-line prefer-const
 
   window.loadTreePage = function() {
-    console.log('loadtreepage');;;
     $.ajax({
       method: 'GET',
       url: '/people'

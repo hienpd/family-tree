@@ -9,7 +9,7 @@
     if ($('#choose-parents').val().length > 2) {
       return Materialize.toast('Maximum number of parents is two!', 4000);
     }
-    const stuff = {
+    const person_info = {
       given_name: $('#edit_given_name').val(),
       middle_name: $('#edit_middle_name').val(),
       family_name: $('#edit_family_name').val(),
@@ -17,14 +17,14 @@
     };
 
     if ($('#edit_dob').val()) {
-      stuff.dob = $('#edit_dob').val();
+      person_info.dob = $('#edit_dob').val();
     }
 
     $.ajax({ // update person
       method: 'PATCH',
       url: `/people/${person.id}`,
       contentType: 'application/json',
-      data: JSON.stringify(stuff)
+      data: JSON.stringify(person_info)
     })
     .then(() =>
       $.ajax({
@@ -176,46 +176,43 @@
       Materialize.updateTextFields();
 
       // Open edit modal
-      $.ajax({  // GET parent/child data
+      return $.ajax({  // GET parent/child data
         method: 'GET',
         url: '/people',
         dataType: 'json'
       })
-      .then((people) => { // Populate dropdown parent menu
-        for (const peep of people) {
-          if (person.id === peep.id) { // the person being edited should not
-                                       // be in the list of their parents
-            continue;
-          }
-          $('#choose-parents').append(
-            $('<option></option>').val(peep.id)
-              .html(`${peep.given_name} ${peep.family_name}`));
+    })
+    .then((people) => { // Populate dropdown parent menu
+      for (const peep of people) {
+        if (person.id === peep.id) { // the person being edited should not
+                                     // be in the list of their parents
+          continue;
         }
+        $('#choose-parents').append(
+          $('<option></option>').val(peep.id)
+            .html(`${peep.given_name} ${peep.family_name}`));
+      }
 
-        return $.ajax({
-          method: 'GET',
-          url: `/people/${person.id}/parents`
-        });
-      })
-      .then((parents) => {
-        for (const parent of parents) {
-          $(`#choose-parents option[value=${parent.parent_id}]`)
-            .prop('selected', true);
-        }
+      return $.ajax({
+        method: 'GET',
+        url: `/people/${person.id}/parents`
+      });
+    })
+    .then((parents) => {
+      for (const parent of parents) {
+        $(`#choose-parents option[value=${parent.parent_id}]`)
+          .prop('selected', true);
+      }
 
-        $('select').material_select();
-        $('#modal1').openModal();
+      $('select').material_select();
+      $('#modal1').openModal();
 
-        $('#send').click(sendClickHandler);
+      $('#send').click(sendClickHandler);
 
-        $('#save').click(saveClickHandler);
-      })
-      .catch(() => {
-        Materialize.toast('Unable to open edit modal', 4000);
-      }); // Open modal
+      $('#save').click(saveClickHandler);
     })
     .catch(() => {
-      Materialize.toast('Unable to get data for person', 4000);
+      Materialize.toast('Unable to open edit window', 4000);
     });
   };
 

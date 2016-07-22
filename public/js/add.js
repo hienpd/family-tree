@@ -98,7 +98,7 @@
 
     const userId =
      Number.parseInt(/family-tree-userId=(\d+)/.exec(document.cookie)[1]);
-    const stuff = {
+    const person_info = {
       given_name,
       middle_name,
       family_name,
@@ -106,11 +106,11 @@
     };
 
     if (isSelf) {
-      stuff.user_id = userId;
+      person_info.user_id = userId;
     }
 
     if (dob !== '') {
-      stuff.dob = dob;
+      person_info.dob = dob;
     }
 
     $.ajax({
@@ -118,7 +118,7 @@
       url: '/people',
       contentType: 'application/json',
       dataType: 'json',
-      data: JSON.stringify(stuff)
+      data: JSON.stringify(person_info)
     })
     .then((data) => {
       const childId = data.id;
