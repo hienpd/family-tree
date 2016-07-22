@@ -96,14 +96,20 @@
       }
     })();
 
-    const userId =
-     Number.parseInt(/family-tree-userId=(\d+)/.exec(document.cookie)[1]);
     const person_info = {
       given_name,
       middle_name,
       family_name,
       gender
     };
+
+    const regexResult = /family-tree-userId=(\d+)/.exec(document.cookie);
+
+    if (regexResult === null) {
+      return Materialize.toast('Cookie not found', 4000);
+    }
+
+    const userId = Number.parseInt(regexResult[1]);
 
     if (isSelf) {
       person_info.user_id = userId;

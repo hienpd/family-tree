@@ -374,8 +374,13 @@
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const userId =
-      Number.parseInt(/family-tree-userId=(\d+)/.exec(document.cookie)[1]);
+    const regexResult = /family-tree-userId=(\d+)/.exec(document.cookie);
+
+    if (regexResult === null) {
+      return Materialize.toast('Cookie not found', 4000);
+    }
+
+    const userId = Number.parseInt(regexResult[1]);
 
     for (const person of persons) {
       if (person.user_id === userId) {
