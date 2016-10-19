@@ -6,9 +6,10 @@
 
   const gridSquareWidth = 120;
   const gridSquareHeight = 150;
-  const maxPeople = 30;
   const nodeRadius = 50; // Node size is 100 x 100 set in CSS
   const yOffset = 10; // Prevent line clipping against canvas
+
+  let maxPeople;
 
   const canvas = $('#canvas')[0];
   const ctx = canvas.getContext('2d');
@@ -60,17 +61,19 @@
   let materix;
 
   initData = function() {
+    let maxId = -Infinity;
     personsById = [];
     for (const person of persons) {
       personsById[person.id] = person;
+      maxId = Math.max(maxId, person.id);
     }
+
+    maxPeople = maxId + 1;
 
     // init materix
-    materix = [];
-    for (let i = 0; i < maxPeople; ++i) { // some # > max id
-      materix.push([]);
-    }
+    materix = Array(maxPeople).fill().map(() => []); // maxPeople x maxPeople
 
+    // materix[a.id][b.id] => a is a mate of b
     for (const pr of parentRels) {
       for (const qr of parentRels) {
         if (pr.child_id === qr.child_id) {
@@ -82,6 +85,7 @@
   };
 
   const matesOf = function(id) {
+    // return the ids of all mates of a given id.
     id = Number(id);
     const res = [];
 
@@ -123,22 +127,26 @@
     return res;
   };
 
-  let topId;
-  let topHeight; // set to 0 before calling findTop *cough* *HACK* *cough*
+  const findTop = function(id) {
+    // find top (i.e. root) of tree containing given id.
+    let topId;
+    let topHeight = 0;
 
-  const findTop = function(height, id) {
-    if (height >= topHeight) {
-      topHeight = height;
-      topId = id;
-    }
-    const parents = parentsOf(id);
+    const findTopHelper = function(height, id) {
+      if (height >= topHeight) {
+        topHeight = height;
+        topId = id;
+      }
+      const parents = parentsOf(id);
 
-    for (const parent of parents) {
-      findTop(height + 1, parent);
-    }
+      for (const parent of parents) {
+        findTopHelper(height + 1, parent);
+      }
+    };
 
+    findTopHelper(0, id);
     return topId;
-  };
+  }
 
   const descend = function(generation) {
     for (let i = 0; i < generation.length; ++i) {
@@ -389,8 +397,7 @@
       }
     }
 
-    topHeight = 0;
-    const top = [{ id: findTop(0, selectedPersonId) }];
+    const top = [{ id: findTop(selectedPersonId) }];
 
     descend(top);
     computeWidth(top);
