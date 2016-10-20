@@ -73,7 +73,10 @@
     // init materix
     materix = Array(maxPeople).fill().map(() => []); // maxPeople x maxPeople
 
-    // materix[a.id][b.id] => a is a mate of b
+    // materix[a.id][b.id] => a is a mate of b (i.e. a and b
+    // are parents of the same child); includes the case where a = b
+    // (i.e. if a is a parent, then materix[a.id][a.id]; in other words,
+    // a is a mate of a).
     for (const pr of parentRels) {
       for (const qr of parentRels) {
         if (pr.child_id === qr.child_id) {
@@ -97,6 +100,32 @@
 
     return res;
   };
+
+  const matesOfMatesOf = function(id) {
+    // given an id, return its mates and their mates (and so on).
+    // Example: a & b have a child; b & c have a child.
+    // matesOf(a) = [a,b]
+    // matesOf(b) = [a,b,c]
+    // matesOf(c) = [b,c]
+    // but matesOfMatesOf(a) = matesOfMatesOf(b) = matesOfMatesOf(c) = [a,b,c]
+    const mates = matesOf(id);
+    let changed;
+
+    do {
+      changed = false;
+      for (const m of mates) {
+        const mMates = matesOf(m);
+        for (const mm of mMates) {
+          if (mates.indexOf(mm) < 0) {
+            mates.push(mm);
+            changed = true;
+          }
+        }
+      }
+    } while (changed);
+
+    return mates;
+  }
 
   const parentsOf = function(id) {
     id = Number(id);
@@ -150,7 +179,7 @@
 
   const descend = function(generation) {
     for (let i = 0; i < generation.length; ++i) {
-      const ms = matesOf(generation[i].id);
+      const ms = matesOfMatesOf(generation[i].id);
 
       switch (ms.length) {
         case 0:
@@ -206,8 +235,8 @@
         width += child.width;
       }
       else {  // two mates
-        child.leftWidth = Math.max(2, computeWidth(child.leftChildren));
-        child.rightWidth = Math.max(2, computeWidth(child.rightChildren));
+        child.leftWidth = Math.max(1, computeWidth(child.leftChildren));
+        child.rightWidth = Math.max(1, computeWidth(child.rightChildren));
         width += child.leftWidth + child.rightWidth;
       }
     }
@@ -344,8 +373,8 @@
       );
       (function pushIds() {
         drawnIds.push(person.id);
-        drawnIds.push(person.rightId);
-        drawnIds.push(person.leftId);
+        drawnIds.push(personRight.id);
+        drawnIds.push(personLeft.id);
       })();
       drawSubtree(node.leftChildren, left + offset, level + 1, xl, level,
         node.leftWidth
@@ -400,6 +429,7 @@
     const top = [{ id: findTop(selectedPersonId) }];
 
     descend(top);
+    drawnIds.length = 0;
     computeWidth(top);
 
     // eslint-disable-next-line no-undefined
