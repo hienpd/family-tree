@@ -356,8 +356,8 @@
     const tripleNode = function(node, person) {
       const personRight = personsById[node.rightId];
       const personLeft = personsById[node.leftId];
-      const xl = (node.leftWidth - 1) / 2 + offset;
-      const xr = (node.rightWidth - 1) / 2 + node.leftWidth + offset;
+      const xl = left + (node.leftWidth - 1) / 2 + offset;
+      const xr = left + (node.rightWidth - 1) / 2 + node.leftWidth + offset;
       const xm = (xl + xr) / 2;
 
       drawLine([xl - 0.5, level, xr + 0.5, level]);
@@ -429,8 +429,9 @@
     const top = [{ id: findTop(selectedPersonId) }];
 
     descend(top);
-    drawnIds.length = 0;
     computeWidth(top);
+
+    drawnIds.length = 0;
 
     // eslint-disable-next-line no-undefined
     drawSubtree(top, (canvas.width / gridSquareWidth - 1 - top.width) / 2, 0, undefined, undefined, top.width);
