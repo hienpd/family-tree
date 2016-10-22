@@ -6,7 +6,7 @@
   "scripts": {
     "knex": "knex",
     "test": "mocha",
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "heroku-postbuild": "knex migrate:latest",
     "nf": "nf start",
     "lint": "eslint *.js"

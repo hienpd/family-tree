@@ -48,6 +48,7 @@
     })
     .then(() => {
       initData();
+      findCOSP();
       drawTree();
     })
     .catch(() => {
@@ -88,6 +89,7 @@
   };
 
   const matesOf = function(id) {
+    if (typeof id !== 'number') { console.log(id, 'is not a number'); }
     // return the ids of all mates of a given id.
     id = Number(id);
     const res = [];
@@ -128,6 +130,7 @@
   }
 
   const parentsOf = function(id) {
+    if (typeof id !== 'number') { console.log(id, 'is not a number'); }
     id = Number(id);
     const res = [];
 
@@ -141,6 +144,8 @@
   };
 
   const childrenOf = function(id1, id2) {
+    if (typeof id1 !== 'number') { console.log(id1, 'is not a number');;; }
+    if (typeof id2 !== 'number') { console.log(id2, 'is not a number');;; }
     id1 = Number(id1);
     id2 = Number(id2);
     const res = [];
@@ -156,6 +161,17 @@
     return res;
   };
 
+  const findCOSP = function () {
+    // return children of single parents.
+    const res = [];
+    for (const person of persons) {
+      const ps = parentsOf(person.id);
+      if (ps.length === 1) {
+        res.push(person.id);
+      }
+    }
+    console.log(res);
+  }
   const findTop = function(id) {
     // find top (i.e. root) of tree containing given id.
     let topId;
@@ -235,9 +251,9 @@
         width += child.width;
       }
       else {  // two mates
-        child.leftWidth = Math.max(1, computeWidth(child.leftChildren));
-        child.rightWidth = Math.max(1, computeWidth(child.rightChildren));
-        width += child.leftWidth + child.rightWidth;
+        child.leftWidth = Math.max(2, computeWidth(child.leftChildren));
+        child.rightWidth = Math.max(2, computeWidth(child.rightChildren));
+        width += child.leftWidth + child.rightWidth - 1;
       }
     }
     children.width = width;
@@ -300,6 +316,7 @@
 
   // eslint-disable-next-line max-params
   const drawSubtree = function(tree, left, level, parentx, parenty, parentw) {
+    console.log(tree, left, level, parentx, parenty, parentw);;;
     if (level > maxLevel) {
       maxLevel = level;
     }
@@ -430,6 +447,7 @@
 
     descend(top);
     computeWidth(top);
+console.log(top);;;
 
     drawnIds.length = 0;
 
