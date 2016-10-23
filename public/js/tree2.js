@@ -45,6 +45,10 @@
         user_id: null
       });
       initData();
+      console.log(matesOf(0));;;
+      console.log(matesOf(4));;;
+      console.log(matesOfMatesOf(0));;;
+      console.log(matesOfMatesOf(4));;;
       drawTree();
     })
     .catch((err) => {
@@ -77,12 +81,17 @@
 
     // materix[a.id][b.id] => a is a mate of b (i.e. a and b
     // are parents of the same child).
+    // As it happens, it is useful for materix[a.id][a.id] (and [b][b])
+    // to be true as well.
     for (const person of persons) {
       if (person.parents.length === 2) {
+        materix[person.parents[0]][person.parents[0]] = true;
         materix[person.parents[0]][person.parents[1]] = true;
         materix[person.parents[1]][person.parents[0]] = true;
+        materix[person.parents[1]][person.parents[1]] = true;
       }
     }
+    console.log(materix);
   };
 
   const matesOf = function(id) {
@@ -103,9 +112,9 @@
   const matesOfMatesOf = function(id) {
     // given an id, return its mates and their mates (and so on).
     // Example: a & b have a child; b & c have a child.
-    // matesOf(a) = [b]
-    // matesOf(b) = [a,c]
-    // matesOf(c) = [b]
+    // matesOf(a) = [a, b] // order is not important
+    // matesOf(b) = [a, b, c]
+    // matesOf(c) = [b, c]
     // but matesOfMatesOf(a) = matesOfMatesOf(b) = matesOfMatesOf(c) = [a,b,c]
     const mates = matesOf(id);
     let changed;
@@ -113,7 +122,7 @@
     do {
       changed = false;
       for (const m of mates) {
-        if (m === 0) {  // skip the unknown parent
+        if (m === 0) {  // skip the unknown parent if present
           continue;
         }
         const mMates = matesOf(m);
@@ -197,8 +206,8 @@
   }
 
   const nodify = function(id) {
-    // Given an id, creates an appropriate TreeNode and its
-    // subtrees; returns the TreeNode.
+    // Given an id, creates an appropriate Node and its
+    // subtrees; returns the Node.
     const mates = matesOfMatesOf(id);
 
     if (mates.length === 0) {
@@ -212,21 +221,24 @@
     }
     // If mates.length = 3, things get interesting.
     // We expect (and can handle) only this situation: two of the mates
-    // have one mate each and the third has two mates. E.g.
-    // matesOf(a) = b, c
-    // matesOf(b) = a
-    // matesOf(c) = a
-    // We want the one with two mates to be in the middle: [b, a, c]
+    // have two mates each and the third has three mates. E.g.
+    // matesOf(a) = a, c
+    // matesOf(b) = b, c
+    // matesOf(c) = a, b, c
+    // We want the one with three mates to be in the middle: [a, c, b]
     const nMates = mates.map((id) => matesOf(id).length);
-    // We can handle only [2,1,1] or [1,2,1] or [1,1,2]
-    // so check for more than one 2:
-    if (nMates.filter(nn => nn === 2).length !== 1) {
+    // We can handle only [3,2,2] or [2,3,2] or [2,2,3]
+    // so check for more than one 3:
+    if (nMates.filter(nn => nn === 3).length !== 1) {
+      console.log(1, matesOf(1));
+      console.log(2, matesOf(2));
+      console.log(0, matesOf(0));
       throw new Error('Overly complicated 2-mate situation')
     }
-    if (nMates[0] === 2) {
+    if (nMates[0] === 3) {
       mates.unshift(mates.pop()); // ror
     }
-    else if (nMates[2] === 2) {
+    else if (nMates[2] === 3) {
       mates.push(mates.shift()); // rol
     }
     // else no rearrangement is necessary

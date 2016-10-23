@@ -45,6 +45,46 @@ exports.seed = function(knex) {
         created_at: new Date("2016-07-08T03:33:59.857Z"),
         updated_at: new Date("2016-07-08T03:33:59.857Z"),
         gender: 'f'
+      }, {
+        id: 6,
+        given_name: 'Six',
+        family_name: 'Belcher',
+        dob: new Date(2007, 11, 25),
+        created_at: new Date("2016-07-08T03:33:59.857Z"),
+        updated_at: new Date("2016-07-08T03:33:59.857Z"),
+        gender: 'f'
+      }, {
+        id: 7,
+        given_name: 'Seven',
+        family_name: 'Belcher',
+        dob: new Date(2007, 11, 25),
+        created_at: new Date("2016-07-08T03:33:59.857Z"),
+        updated_at: new Date("2016-07-08T03:33:59.857Z"),
+        gender: 'f'
+      }, {
+        id: 8,
+        given_name: 'Eight',
+        family_name: 'Belcher',
+        dob: new Date(2007, 11, 25),
+        created_at: new Date("2016-07-08T03:33:59.857Z"),
+        updated_at: new Date("2016-07-08T03:33:59.857Z"),
+        gender: 'f'
+      }, {
+        id: 9,
+        given_name: 'Nine',
+        family_name: 'Belcher',
+        dob: new Date(2007, 11, 25),
+        created_at: new Date("2016-07-08T03:33:59.857Z"),
+        updated_at: new Date("2016-07-08T03:33:59.857Z"),
+        gender: 'f'
+      }, {
+        id: 10,
+        given_name: 'Ten',
+        family_name: 'Belcher',
+        dob: new Date(2007, 11, 25),
+        created_at: new Date("2016-07-08T03:33:59.857Z"),
+        updated_at: new Date("2016-07-08T03:33:59.857Z"),
+        gender: 'f'
       }])
     )
     .then(() =>

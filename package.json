@@ -9,7 +9,8 @@
     "start": "nodemon server.js",
     "heroku-postbuild": "knex migrate:latest",
     "nf": "nf start",
-    "lint": "eslint *.js"
+    "lint": "eslint *.js",
+    "resetdb": "knex migrate:rollback; knex migrate:latest; knex seed:run"
   },
   "keywords": [
     "postgres"
