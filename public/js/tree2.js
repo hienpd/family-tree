@@ -24,7 +24,6 @@
   window.addEventListener('resize', resize);
 
   let persons;
-  let parentRels;
 
   // Forward function declarations
   let initData; // eslint-disable-line prefer-const
@@ -33,26 +32,24 @@
   window.loadTreePage = function() {
     $.ajax({
       method: 'GET',
-      url: '/people'
+      url: '/people/parents'
     })
     .then((data) => {
       persons = data;
-
-      return $.ajax({
-        method: 'GET',
-        url: '/parents_children'
+      persons.push({
+        id: 0,
+        given_name: '?',
+        middle_name: '*',
+        family_name: '!',
+        parents: [null],
+        user_id: null
       });
-    })
-    .then((data) => {
-      parentRels = data;
-    })
-    .then(() => {
       initData();
-      findCOSP();
       drawTree();
     })
-    .catch(() => {
+    .catch((err) => {
       Materialize.toast('Error loading tree data', 4000);
+      console.log('Error', err);
     });
   };
 
@@ -67,29 +64,29 @@
     for (const person of persons) {
       personsById[person.id] = person;
       maxId = Math.max(maxId, person.id);
+      if (person.parents[0] === null) {
+        person.parents.length = 0;
+      } else if (person.parents.length === 1) {
+        person.parents.push(0); // parent id 0 => unknown
+      }
     }
-
     maxPeople = maxId + 1;
 
     // init materix
     materix = Array(maxPeople).fill().map(() => []); // maxPeople x maxPeople
 
     // materix[a.id][b.id] => a is a mate of b (i.e. a and b
-    // are parents of the same child); includes the case where a = b
-    // (i.e. if a is a parent, then materix[a.id][a.id]; in other words,
-    // a is a mate of a).
-    for (const pr of parentRels) {
-      for (const qr of parentRels) {
-        if (pr.child_id === qr.child_id) {
-          materix[pr.parent_id][qr.parent_id] = true;
-          materix[qr.parent_id][pr.parent_id] = true;
-        }
+    // are parents of the same child).
+    for (const person of persons) {
+      if (person.parents.length === 2) {
+        materix[person.parents[0]][person.parents[1]] = true;
+        materix[person.parents[1]][person.parents[0]] = true;
       }
     }
   };
 
   const matesOf = function(id) {
-    if (typeof id !== 'number') { console.log(id, 'is not a number'); }
+    if (typeof id !== 'number') { console.log(id, 'is not a number');;; }
     // return the ids of all mates of a given id.
     id = Number(id);
     const res = [];
@@ -106,9 +103,9 @@
   const matesOfMatesOf = function(id) {
     // given an id, return its mates and their mates (and so on).
     // Example: a & b have a child; b & c have a child.
-    // matesOf(a) = [a,b]
-    // matesOf(b) = [a,b,c]
-    // matesOf(c) = [b,c]
+    // matesOf(a) = [b]
+    // matesOf(b) = [a,c]
+    // matesOf(c) = [b]
     // but matesOfMatesOf(a) = matesOfMatesOf(b) = matesOfMatesOf(c) = [a,b,c]
     const mates = matesOf(id);
     let changed;
@@ -116,6 +113,9 @@
     do {
       changed = false;
       for (const m of mates) {
+        if (m === 0) {  // skip the unknown parent
+          continue;
+        }
         const mMates = matesOf(m);
         for (const mm of mMates) {
           if (mates.indexOf(mm) < 0) {
@@ -129,20 +129,6 @@
     return mates;
   }
 
-  const parentsOf = function(id) {
-    if (typeof id !== 'number') { console.log(id, 'is not a number'); }
-    id = Number(id);
-    const res = [];
-
-    for (const pr of parentRels) {
-      if (pr.child_id === id) {
-        res.push(pr.parent_id);
-      }
-    }
-
-    return res;
-  };
-
   const childrenOf = function(id1, id2) {
     if (typeof id1 !== 'number') { console.log(id1, 'is not a number');;; }
     if (typeof id2 !== 'number') { console.log(id2, 'is not a number');;; }
@@ -151,7 +137,7 @@
     const res = [];
 
     for (const person of persons) {
-      const ps = parentsOf(person.id);
+      const ps = person.parents;
 
       if (ps.indexOf(id1) >= 0 && ps.indexOf(id2) >= 0) {
         res.push(person.id);
@@ -161,17 +147,6 @@
     return res;
   };
 
-  const findCOSP = function () {
-    // return children of single parents.
-    const res = [];
-    for (const person of persons) {
-      const ps = parentsOf(person.id);
-      if (ps.length === 1) {
-        res.push(person.id);
-      }
-    }
-    console.log(res);
-  }
   const findTop = function(id) {
     // find top (i.e. root) of tree containing given id.
     let topId;
@@ -182,8 +157,7 @@
         topHeight = height;
         topId = id;
       }
-      const parents = parentsOf(id);
-
+      const parents = personsById[id].parents;
       for (const parent of parents) {
         findTopHelper(height + 1, parent);
       }
@@ -192,6 +166,72 @@
     findTopHelper(0, id);
     return topId;
   }
+
+  class SingleNode {
+    // Represents a person with no mates.
+    constructor (id) {
+      this.id = id;
+    }
+  }
+
+  class DoubleNode {
+    // Represents a person with one mate.
+    constructor (id, mateId) {
+      this.id = id;
+      this.mateId = mateId;
+      this.children = childrenOf(id, mateId).map((child) => nodify(child));
+    }
+  }
+
+  class TripleNode {
+    // Represents a person with two mates.
+    constructor (id, ids) {
+      // ids is an array of three ids, one of which is id, the other two
+      // are id's mates. The position of id in the array depends on who's
+      // mated with whom.
+      this.id = id;
+      this.ids = ids; // array of three ids, one of which is id.
+      this.leftChildren = childrenOf(ids[0], ids[1]).map((child) => nodify(child));
+      this.rightChildren = childrenOf(ids[1], ids[2]).map((child) => nodify(child));
+    }
+  }
+
+  const nodify = function(id) {
+    // Given an id, creates an appropriate TreeNode and its
+    // subtrees; returns the TreeNode.
+    const mates = matesOfMatesOf(id);
+
+    if (mates.length === 0) {
+      return new SingleNode(id);
+    }
+    else if (mates.length === 2) {
+      return new DoubleNode(id, mates[0] !== id ? mates[0] : mates[1]);
+    }
+    else if (mates.length !== 3) {
+      throw new Error('Bad number of mates!');
+    }
+    // If mates.length = 3, things get interesting.
+    // We expect (and can handle) only this situation: two of the mates
+    // have one mate each and the third has two mates. E.g.
+    // matesOf(a) = b, c
+    // matesOf(b) = a
+    // matesOf(c) = a
+    // We want the one with two mates to be in the middle: [b, a, c]
+    const nMates = mates.map((id) => matesOf(id).length);
+    // We can handle only [2,1,1] or [1,2,1] or [1,1,2]
+    // so check for more than one 2:
+    if (nMates.filter(nn => nn === 2).length !== 1) {
+      throw new Error('Overly complicated 2-mate situation')
+    }
+    if (nMates[0] === 2) {
+      mates.unshift(mates.pop()); // ror
+    }
+    else if (nMates[2] === 2) {
+      mates.push(mates.shift()); // rol
+    }
+    // else no rearrangement is necessary
+    return new TripleNode(id, mates);
+  };
 
   const descend = function(generation) {
     for (let i = 0; i < generation.length; ++i) {
@@ -442,14 +482,15 @@
         break;
       }
     }
-
     const top = [{ id: findTop(selectedPersonId) }];
 
+console.log(nodify(findTop(selectedPersonId)));;;
     descend(top);
     computeWidth(top);
 console.log(top);;;
 
     drawnIds.length = 0;
+    drawnIds.push(0);
 
     // eslint-disable-next-line no-undefined
     drawSubtree(top, (canvas.width / gridSquareWidth - 1 - top.width) / 2, 0, undefined, undefined, top.width);

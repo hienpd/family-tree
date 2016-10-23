@@ -19,9 +19,9 @@ router.get('/people', (_req, res, next) => {
 
 // GET /people/parents
 router.get('/people/parents', (_req, res, next) => {
-  knex.raw('select people.id, given_name, middle_name, family_name, array_agg(parent_id) as parents from people left join parents_children on (people.id = parents_children.child_id) group by people.id')
+  knex.raw('select people.id, given_name, middle_name, family_name, user_id, array_agg(parent_id) as parents from people left join parents_children on (people.id = parents_children.child_id) group by people.id')
     .then((people) => {
-      res.send(people);
+      res.send(people.rows);
     })
     .catch((err) => {
       next(err);
