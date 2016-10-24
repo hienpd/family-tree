@@ -36,19 +36,7 @@
     })
     .then((data) => {
       persons = data;
-      persons.push({
-        id: 0,
-        given_name: '?',
-        middle_name: '*',
-        family_name: '!',
-        parents: [null],
-        user_id: null
-      });
       initData();
-      console.log(matesOf(0));;;
-      console.log(matesOf(4));;;
-      console.log(matesOfMatesOf(0));;;
-      console.log(matesOfMatesOf(4));;;
       drawTree();
     })
     .catch((err) => {
@@ -65,15 +53,29 @@
   initData = function() {
     let maxId = -Infinity;
     personsById = [];
+    const unknownPersons = [];
     for (const person of persons) {
       personsById[person.id] = person;
       maxId = Math.max(maxId, person.id);
       if (person.parents[0] === null) {
         person.parents.length = 0;
-      } else if (person.parents.length === 1) {
-        person.parents.push(0); // parent id 0 => unknown
       }
     }
+    for (const person of persons) {
+      if (person.parents.length === 1) {  // just one parent?
+        maxId += 1;                       // create fictitious parent
+        person.parents.push(maxId);
+        const unknownPerson = {
+          id: maxId,
+          given_name: '?',
+          family_name: '!',
+          parents: []
+        };
+        unknownPersons.push(unknownPerson);
+        personsById[unknownPerson.id] = unknownPerson;
+      }
+    }
+    persons.push(...unknownPersons);
     maxPeople = maxId + 1;
 
     // init materix
@@ -91,7 +93,6 @@
         materix[person.parents[1]][person.parents[1]] = true;
       }
     }
-    console.log(materix);
   };
 
   const matesOf = function(id) {
@@ -122,9 +123,6 @@
     do {
       changed = false;
       for (const m of mates) {
-        if (m === 0) {  // skip the unknown parent if present
-          continue;
-        }
         const mMates = matesOf(m);
         for (const mm of mMates) {
           if (mates.indexOf(mm) < 0) {
@@ -174,12 +172,23 @@
 
     findTopHelper(0, id);
     return topId;
-  }
+  };
+
+  const sumWidths = function(nodes) {
+    // Return the sum of the widths of the nodes.
+    return nodes.reduce((acc, node) => acc + node.width, 0);
+  };
 
   class SingleNode {
     // Represents a person with no mates.
     constructor (id) {
       this.id = id;
+      this.width = 1;
+    }
+    draw(left, level, parentx, parenty, parentw) {
+      const offset = (parentw - 1) / 2; // horizontal offset to center node.
+      drawNodeEx(this.id, left + offset, level);
+      drawJoin(parentx, parenty, left + offset, level);
     }
   }
 
@@ -189,6 +198,17 @@
       this.id = id;
       this.mateId = mateId;
       this.children = childrenOf(id, mateId).map((child) => nodify(child));
+      this.width = Math.max(2, sumWidths(this.children));
+    }
+    draw(left, level, parentx, parenty, parentw) {
+      const offset = (parentw - 2) / 2; // horizontal offset to center double node.
+      drawNodeEx(this.id, left + offset, level);
+      drawNodeEx(this.mateId, left + offset + 1, level);
+      drawJoin(parentx, parenty, left + offset, level);
+      drawLine([left + offset, level, left + offset + 1, level])
+      const childrenWidth = sumWidths(this.children);
+      const childrenLeft = left + (parentw - childrenWidth) / 2;
+      drawNodes(this.children, childrenLeft, level + 1, left + offset + 0.5, level, childrenWidth);
     }
   }
 
@@ -202,8 +222,36 @@
       this.ids = ids; // array of three ids, one of which is id.
       this.leftChildren = childrenOf(ids[0], ids[1]).map((child) => nodify(child));
       this.rightChildren = childrenOf(ids[1], ids[2]).map((child) => nodify(child));
+      this.width = Math.max(1.5, sumWidths(this.leftChildren))
+                 + Math.max(1.5, sumWidths(this.rightChildren));
+    }
+    draw(left, level, parentx, parenty, parentw) {
+      const offset = (parentw - 3) / 2; // horizontal offset to center triple node.
+      drawNodeEx(this.ids[0], left + offset, level);
+      drawNodeEx(this.ids[1], left + offset + 1, level);
+      drawNodeEx(this.ids[2], left + offset + 2, level);
+      drawJoin(parentx, parenty, left + offset + this.ids.indexOf(this.id), level);
+      drawLine([left + offset, level, left + offset + 2, level]);
+      const leftWidth = sumWidths(this.leftChildren);
+      const rightWidth = sumWidths(this.rightChildren);
+      const leftLeft = left + (parentw - leftWidth - rightWidth) / 2;
+      const rightLeft = leftLeft + leftWidth;
+      drawNodes(this.leftChildren, leftLeft, level + 1, left + offset + 0.5, level, leftWidth);
+      drawNodes(this.rightChildren, rightLeft, level + 1, left + offset + 1.5, level, rightWidth);
     }
   }
+
+  const drawNodes = function(nodes, left, level, parentx, parenty, parentw) {
+    for (const node of nodes) {
+      node.draw(left, level, parentx, parenty, node.width);
+      left += node.width;
+    }
+  }
+
+  const drawNodeEx = function(id, x, y) {
+    const person = personsById[id];
+    drawNode(`${person.given_name} ${person.family_name}`, person.id, selectedPersonId, x, y);
+  };
 
   const nodify = function(id) {
     // Given an id, creates an appropriate Node and its
@@ -230,9 +278,6 @@
     // We can handle only [3,2,2] or [2,3,2] or [2,2,3]
     // so check for more than one 3:
     if (nMates.filter(nn => nn === 3).length !== 1) {
-      console.log(1, matesOf(1));
-      console.log(2, matesOf(2));
-      console.log(0, matesOf(0));
       throw new Error('Overly complicated 2-mate situation')
     }
     if (nMates[0] === 3) {
@@ -350,12 +395,11 @@
       coords.splice(0, 2);
     }
     ctx.stroke();
-    ctx.closePath();
   };
 
   // eslint-disable-next-line max-params
   const drawJoin = function(parentx, parenty, x, y) {
-    if (parentx === undefined) { // eslint-disable-line no-undefined
+    if (!parentx) {
       return;
     }
     const midy = (parenty + y) / 2;
@@ -496,16 +540,18 @@
     }
     const top = [{ id: findTop(selectedPersonId) }];
 
-console.log(nodify(findTop(selectedPersonId)));;;
+
     descend(top);
     computeWidth(top);
-console.log(top);;;
 
     drawnIds.length = 0;
     drawnIds.push(0);
 
     // eslint-disable-next-line no-undefined
-    drawSubtree(top, (canvas.width / gridSquareWidth - 1 - top.width) / 2, 0, undefined, undefined, top.width);
+    // drawSubtree(top, (canvas.width / gridSquareWidth - 1 - top.width) / 2, 0, undefined, undefined, top.width);
+
+    const topNode = nodify(findTop(selectedPersonId));
+    topNode.draw(0, 0, null, null, canvas.width / gridSquareWidth - 1);
 
     (function drawUnconnectedNodes() {
       let x = 0;
@@ -519,7 +565,7 @@ console.log(top);;;
           person.id, selectedPersonId, x, y);
         x += 1;
       }
-    })();
+    })//();
   };
 
   $('.tree-div').on('click', 'a.edit', popUpEditModal);
