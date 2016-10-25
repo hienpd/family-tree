@@ -9,10 +9,19 @@
   const nodeRadius = 50; // Node size is 100 x 100 set in CSS
   const yOffset = 10; // Prevent line clipping against canvas
 
-  let maxPeople;
-
   const canvas = $('#canvas')[0];
   const ctx = canvas.getContext('2d');
+
+  let persons;
+  let firstFictitiousId;
+  let personsById;
+  let materix;
+
+  let maxPeople;
+
+  let selectedPersonId;
+  const drawnIds = [];
+  let maxLevel;
 
   const resize = function() {
     var div = $('.tree-div')[0];
@@ -23,34 +32,37 @@
 
   window.addEventListener('resize', resize);
 
-  // Forward function declarations
-  let initData; // eslint-disable-line prefer-const
-  let drawTree; // eslint-disable-line prefer-const
-
   window.loadTreePage = function() {
+    drawnIds.length = 0;
+    maxLevel = -1;
+    persons = null;
+
     $.ajax({
       method: 'GET',
       url: '/people/parents'
     })
     .then((data) => {
       persons = data;
-      initData();
-      drawTree();
+
+      try {
+        initData();
+        drawTree();
+      }
+      catch (err) {
+        throw err;
+      }
     })
     .catch((err) => {
-      Materialize.toast('Error loading tree data', 4000);
-      console.log('Error', err);
+      Materialize.toast(err.statusText || err.message, 4000);
+      if (persons) {
+        drawUnconnectedNodes();
+      }
     });
   };
 
   resize();
 
-  let persons;
-  let firstFictitiousId;
-  let personsById;
-  let materix;
-
-  initData = function() {
+  const initData = function() {
     let maxId = -Infinity;
     personsById = [];
     const unknownPersons = [];
@@ -97,9 +109,7 @@
   };
 
   const matesOf = function(id) {
-    if (typeof id !== 'number') { console.log(id, 'is not a number');;; }
     // return the ids of all mates of a given id.
-    id = Number(id);
     const res = [];
 
     for (let j = 0; j < maxPeople; ++j) {
@@ -138,10 +148,6 @@
   }
 
   const childrenOf = function(id1, id2) {
-    if (typeof id1 !== 'number') { console.log(id1, 'is not a number');;; }
-    if (typeof id2 !== 'number') { console.log(id2, 'is not a number');;; }
-    id1 = Number(id1);
-    id2 = Number(id2);
     const res = [];
 
     for (const person of persons) {
@@ -289,8 +295,6 @@
     return new TripleNode(id, mates);
   };
 
-  let maxLevel = 0;
-
   // eslint-disable-next-line max-params
   const drawNode = function(id, x, y) {
     let $node;
@@ -326,6 +330,8 @@
         top: y * gridSquareHeight - nodeRadius + yOffset
       })
     );
+    drawnIds.push(id);
+    maxLevel = Math.max(maxLevel, y);
   };
 
   const drawLine = function(coords) {
@@ -353,10 +359,24 @@
     drawLine([parentx, parenty, parentx, midy, x, midy, x, y]);
   };
 
-  let selectedPersonId;
-  const drawnIds = [];
+  const drawUnconnectedNodes = function() {
+    let x = 0;
+    let y = maxLevel + 1;
 
-  drawTree = function() {
+    for (const person of persons) {
+      if (person.id >= firstFictitiousId || drawnIds.indexOf(person.id) >= 0) {
+        continue;
+      }
+      drawNode(person.id, x + 0.5, y);
+      x += 1;
+      if (x * gridSquareWidth >= canvas.width) {
+        x = 0;
+        y += 1;
+      }
+    }
+  };
+
+  const drawTree = function() {
     const $canvas = $('.tree-div canvas');
 
     $('.tree-div').empty().append($canvas);
@@ -378,26 +398,10 @@
       }
     }
 
-    drawnIds.length = 0;
-    drawnIds.push(0);
-
     const topNode = nodify(findTop(selectedPersonId));
     const offset = (canvas.width / gridSquareWidth - topNode.width) / 2;
     topNode.draw(offset, 0, null, null, topNode.width);
-
-    (function drawUnconnectedNodes() {
-      let x = 0;
-      const y = maxLevel + 1;
-
-      for (const person of persons) {
-        if (drawnIds.indexOf(person.id) >= 0) {
-          continue;
-        }
-        drawNode(`${person.given_name} ${person.family_name}`,
-          person.id, selectedPersonId, x, y);
-        x += 1;
-      }
-    })//();
+    drawUnconnectedNodes();
   };
 
   $('.tree-div').on('click', 'a.edit', popUpEditModal);
