@@ -187,7 +187,6 @@
     }
     draw(left, level, parentx, parenty, parentw) {
       const offset = (parentw - 1) / 2 + 0.5; // horizontal offset to center node.
-      console.log('single', left, level, parentw, offset);;;
       drawNodeEx(this.id, left + offset, level);
       drawJoin(parentx, parenty, left + offset, level);
     }
@@ -227,17 +226,14 @@
                  + Math.max(1.5, sumWidths(this.rightChildren));
     }
     draw(left, level, parentx, parenty, parentw) {
-console.log(left, level);;;
       const leftActualWidth = sumWidths(this.leftChildren);
       const rightActualWidth = sumWidths(this.rightChildren);
       const leftLeft = left + (leftActualWidth === 1 ? 0.5 : 0);
       const rightLeft = leftLeft + leftActualWidth;
-console.log(leftLeft, rightLeft);
       const xs = []; // x-coords of three nodes
       xs[0] = left + leftActualWidth / 2 - 0.5 + (leftActualWidth === 1 ? 0.5 : 0);
       xs[2] = leftLeft + leftActualWidth + rightActualWidth / 2 + 0.5;
       xs[1] = (xs[0] + xs[2]) / 2;
-console.log(xs);;;
       drawNodeEx(this.ids[0], xs[0], level);
       drawNodeEx(this.ids[1], xs[1], level);
       drawNodeEx(this.ids[2], xs[2], level);
@@ -297,74 +293,6 @@ console.log(xs);;;
     return new TripleNode(id, mates);
   };
 
-  const descend = function(generation) {
-    for (let i = 0; i < generation.length; ++i) {
-      const ms = matesOfMatesOf(generation[i].id);
-
-      switch (ms.length) {
-        case 0:
-          break;
-        case 1:
-          generation[i].rightId = null;
-          generation[i].children =
-            childrenOf(generation[i].id, generation[i].id);
-          generation[i].children =
-            descend(generation[i].children.map((x) => ({ id: x })));
-          break;
-        case 2:
-          ms.splice(ms.indexOf(generation[i].id), 1);
-          generation[i].rightId = ms[0];
-          generation[i].children =
-            childrenOf(generation[i].id, generation[i].rightId);
-          generation[i].children =
-            descend(generation[i].children.map((x) => ({ id: x })));
-          break;
-        case 3:
-          ms.splice(ms.indexOf(generation[i].id), 1);
-          generation[i].leftId = ms[0];
-          generation[i].rightId = ms[1];
-          generation[i].leftChildren =
-            childrenOf(generation[i].id, generation[i].leftId);
-          generation[i].rightChildren =
-            childrenOf(generation[i].id, generation[i].rightId);
-          generation[i].leftChildren =
-            descend(generation[i].leftChildren.map((x) => ({ id: x })));
-          generation[i].rightChildren =
-            descend(generation[i].rightChildren.map((x) => ({ id: x })));
-          break;
-        default:
-      }
-    }
-
-    return generation;
-  };
-
-  const computeWidth = function(children) {
-    let width = 0;
-
-    for (const child of children) {
-      // eslint-disable-next-line no-undefined
-      if (child.rightId === undefined) { // no mates => no children
-        child.width = 1;
-        width += child.width;
-      }
-
-      // eslint-disable-next-line no-undefined
-      else if (child.leftId === undefined) { // one mate (on right)
-        child.width = Math.max(2, computeWidth(child.children));
-        width += child.width;
-      }
-      else {  // two mates
-        child.leftWidth = Math.max(2, computeWidth(child.leftChildren));
-        child.rightWidth = Math.max(2, computeWidth(child.rightChildren));
-        width += child.leftWidth + child.rightWidth - 1;
-      }
-    }
-    children.width = width;
-
-    return width;
-  };
-
   let maxLevel = 0;
 
   // eslint-disable-next-line max-params
@@ -417,113 +345,6 @@ console.log(xs);;;
   let selectedPersonId;
   const drawnIds = [];
 
-  // eslint-disable-next-line max-params
-  const drawSubtree = function(tree, left, level, parentx, parenty, parentw) {
-    console.log(tree, left, level, parentx, parenty, parentw);;;
-    if (level > maxLevel) {
-      maxLevel = level;
-    }
-
-    let actualw = 0;
-
-    (function computeActualWidth() {
-      for (const node of tree) {
-        // eslint-disable-next-line no-undefined
-        if (node.rightId === undefined) { // single node
-          actualw += 1;
-        }
-
-        // eslint-disable-next-line no-undefined
-        else if (node.leftId === undefined) { // double node (one mate)
-          actualw += 2;
-        }
-        else { // triple node (two mates)
-          actualw += (node.leftWidth + node.rightWidth) / 2 + 1;
-        }
-      }
-    })();
-
-    const offset = (parentw - actualw) / 2;
-
-    const singleNode = function(node, person) {
-      drawJoin(parentx, parenty, left + offset, level);
-      drawNode(`${person.given_name} ${person.family_name}`, person.id,
-        selectedPersonId, left + offset, level
-      );
-      drawnIds.push(person.id);
-      left += node.width;
-    };
-
-    const doubleNode = function(node, person) {
-      drawJoin(parentx, parenty, left + offset, level);
-      drawLine([left + offset, level, left + offset + 1, level]);
-      drawNode(`${person.given_name} ${person.family_name}`, person.id,
-        selectedPersonId, left + offset, level
-      );
-      drawnIds.push(person.id);
-      const personRight = personsById[node.rightId];
-
-      drawNode(`${personRight.given_name} ${personRight.family_name}`,
-        selectedPersonId, personRight.id, left + offset + 1, level
-      );
-      drawnIds.push(personRight.id);
-      drawSubtree(node.children, left, level + 1, left + offset + 0.5,
-        level, node.width
-      );
-      left += node.width;
-    };
-
-    const tripleNode = function(node, person) {
-      const personRight = personsById[node.rightId];
-      const personLeft = personsById[node.leftId];
-      const xl = left + (node.leftWidth - 1) / 2 + offset;
-      const xr = left + (node.rightWidth - 1) / 2 + node.leftWidth + offset;
-      const xm = (xl + xr) / 2;
-
-      drawLine([xl - 0.5, level, xr + 0.5, level]);
-      drawJoin(parentx, parenty, xm, level);
-      drawNode(`${person.given_name} ${person.family_name}`, person.id,
-        selectedPersonId, xm, level
-      );
-      drawNode(`${personRight.given_name} ${personRight.family_name}`,
-        personRight.id, selectedPersonId, xr + 0.5, level
-      );
-      drawNode(`${personLeft.given_name} ${personLeft.family_name}`,
-        personLeft.id, selectedPersonId, xl - 0.5, level
-      );
-      (function pushIds() {
-        drawnIds.push(person.id);
-        drawnIds.push(personRight.id);
-        drawnIds.push(personLeft.id);
-      })();
-      drawSubtree(node.leftChildren, left + offset, level + 1, xl, level,
-        node.leftWidth
-      );
-      left += node.leftWidth;
-      drawSubtree(node.rightChildren, left + offset, level + 1, xr, level,
-        node.rightWidth
-      );
-      left += node.rightWidth;
-    };
-
-    for (const node of tree) {
-      const person = personsById[node.id];
-
-      // eslint-disable-next-line no-undefined
-      if (node.rightId === undefined) { // single node
-        singleNode(node, person);
-      }
-
-      // eslint-disable-next-line no-undefined
-      else if (node.leftId === undefined) { // double node (one mate)
-        doubleNode(node, person);
-      }
-      else { // triple node (two mates)
-        tripleNode(node, person);
-      }
-    }
-  };
-
   drawTree = function() {
     const $canvas = $('.tree-div canvas');
 
@@ -545,22 +366,13 @@ console.log(xs);;;
         break;
       }
     }
-    const top = [{ id: findTop(selectedPersonId) }];
-
-
-    descend(top);
-    computeWidth(top);
 
     drawnIds.length = 0;
     drawnIds.push(0);
 
-    // eslint-disable-next-line no-undefined
-    // drawSubtree(top, (canvas.width / gridSquareWidth - 1 - top.width) / 2, 0, undefined, undefined, top.width);
-
     const topNode = nodify(findTop(selectedPersonId));
-    console.log(canvas.width, gridSquareWidth, canvas.width / gridSquareWidth);;;
-    console.log(topNode);;;
-    topNode.draw((canvas.width / gridSquareWidth - topNode.width) / 2, 0.5, null, null, topNode.width);
+    const offset = (canvas.width / gridSquareWidth - topNode.width) / 2;
+    topNode.draw(offset, 0, null, null, topNode.width);
 
     (function drawUnconnectedNodes() {
       let x = 0;
