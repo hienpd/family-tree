@@ -51,6 +51,30 @@ exports.seed = function(knex) {
         id: 12,
         child_id: 10,
         parent_id: 1
+      }, {
+        id: 13,
+        child_id: 12,
+        parent_id: 10
+      }, {
+        id: 14,
+        child_id: 12,
+        parent_id: 11
+      }, {
+        id: 15,
+        child_id: 13,
+        parent_id: 10
+      }, {
+        id: 16,
+        child_id: 13,
+        parent_id: 11
+      }, {
+        id: 17,
+        child_id: 14,
+        parent_id: 10
+      }, {
+        id: 18,
+        child_id: 14,
+        parent_id: 11
       }])
     )
     .then(() =>

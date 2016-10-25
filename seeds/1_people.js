@@ -85,6 +85,38 @@ exports.seed = function(knex) {
         created_at: new Date("2016-07-08T03:33:59.857Z"),
         updated_at: new Date("2016-07-08T03:33:59.857Z"),
         gender: 'f'
+      }, {
+        id: 11,
+        given_name: 'Eleven',
+        family_name: 'Belcher',
+        dob: new Date(2007, 11, 25),
+        created_at: new Date("2016-07-08T03:33:59.857Z"),
+        updated_at: new Date("2016-07-08T03:33:59.857Z"),
+        gender: 'f'
+      }, {
+        id: 12,
+        given_name: 'Twelve',
+        family_name: 'Belcher',
+        dob: new Date(2007, 11, 25),
+        created_at: new Date("2016-07-08T03:33:59.857Z"),
+        updated_at: new Date("2016-07-08T03:33:59.857Z"),
+        gender: 'f'
+      }, {
+        id: 13,
+        given_name: 'Thirteen',
+        family_name: 'Belcher',
+        dob: new Date(2007, 11, 25),
+        created_at: new Date("2016-07-08T03:33:59.857Z"),
+        updated_at: new Date("2016-07-08T03:33:59.857Z"),
+        gender: 'f'
+      }, {
+        id: 14,
+        given_name: 'Fourteen',
+        family_name: 'Belcher',
+        dob: new Date(2007, 11, 25),
+        created_at: new Date("2016-07-08T03:33:59.857Z"),
+        updated_at: new Date("2016-07-08T03:33:59.857Z"),
+        gender: 'f'
       }])
     )
     .then(() =>

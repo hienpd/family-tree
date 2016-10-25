@@ -4,7 +4,7 @@
 (function() {
   'use strict';
 
-  const gridSquareWidth = 120;
+  const gridSquareWidth = 128;
   const gridSquareHeight = 150;
   const nodeRadius = 50; // Node size is 100 x 100 set in CSS
   const yOffset = 10; // Prevent line clipping against canvas
@@ -186,7 +186,8 @@
       this.width = 1;
     }
     draw(left, level, parentx, parenty, parentw) {
-      const offset = (parentw - 1) / 2; // horizontal offset to center node.
+      const offset = (parentw - 1) / 2 + 0.5; // horizontal offset to center node.
+      console.log('single', left, level, parentw, offset);;;
       drawNodeEx(this.id, left + offset, level);
       drawJoin(parentx, parenty, left + offset, level);
     }
@@ -201,7 +202,7 @@
       this.width = Math.max(2, sumWidths(this.children));
     }
     draw(left, level, parentx, parenty, parentw) {
-      const offset = (parentw - 2) / 2; // horizontal offset to center double node.
+      const offset = (parentw - 2) / 2 + 0.5; // horizontal offset to center double node.
       drawNodeEx(this.id, left + offset, level);
       drawNodeEx(this.mateId, left + offset + 1, level);
       drawJoin(parentx, parenty, left + offset, level);
@@ -226,18 +227,24 @@
                  + Math.max(1.5, sumWidths(this.rightChildren));
     }
     draw(left, level, parentx, parenty, parentw) {
-      const offset = (parentw - 3) / 2; // horizontal offset to center triple node.
-      drawNodeEx(this.ids[0], left + offset, level);
-      drawNodeEx(this.ids[1], left + offset + 1, level);
-      drawNodeEx(this.ids[2], left + offset + 2, level);
-      drawJoin(parentx, parenty, left + offset + this.ids.indexOf(this.id), level);
-      drawLine([left + offset, level, left + offset + 2, level]);
-      const leftWidth = sumWidths(this.leftChildren);
-      const rightWidth = sumWidths(this.rightChildren);
-      const leftLeft = left + (parentw - leftWidth - rightWidth) / 2;
-      const rightLeft = leftLeft + leftWidth;
-      drawNodes(this.leftChildren, leftLeft, level + 1, left + offset + 0.5, level, leftWidth);
-      drawNodes(this.rightChildren, rightLeft, level + 1, left + offset + 1.5, level, rightWidth);
+console.log(left, level);;;
+      const leftActualWidth = sumWidths(this.leftChildren);
+      const rightActualWidth = sumWidths(this.rightChildren);
+      const leftLeft = left + (leftActualWidth === 1 ? 0.5 : 0);
+      const rightLeft = leftLeft + leftActualWidth;
+console.log(leftLeft, rightLeft);
+      const xs = []; // x-coords of three nodes
+      xs[0] = left + leftActualWidth / 2 - 0.5 + (leftActualWidth === 1 ? 0.5 : 0);
+      xs[2] = leftLeft + leftActualWidth + rightActualWidth / 2 + 0.5;
+      xs[1] = (xs[0] + xs[2]) / 2;
+console.log(xs);;;
+      drawNodeEx(this.ids[0], xs[0], level);
+      drawNodeEx(this.ids[1], xs[1], level);
+      drawNodeEx(this.ids[2], xs[2], level);
+      drawLine([xs[0], level, xs[2], level]);
+      drawJoin(parentx, parenty, xs[this.ids.indexOf(this.id)], level);
+      drawNodes(this.leftChildren, leftLeft, level + 1, xs[0] + 0.5, level, leftActualWidth);
+      drawNodes(this.rightChildren, rightLeft, level + 1, xs[2] - 0.5, level, rightActualWidth);
     }
   }
 
@@ -376,8 +383,8 @@
     }
     $('.tree-div').append(
       $node.css({
-        left: (x + 1) * gridSquareWidth - nodeRadius,
-        top: (y + 0) * gridSquareHeight - nodeRadius + yOffset
+        left: x * gridSquareWidth - nodeRadius,
+        top: y * gridSquareHeight - nodeRadius + yOffset
       })
     );
   };
@@ -386,12 +393,12 @@
     ctx.beginPath();
     ctx.strokeStyle = '#fb4d3d';
     ctx.lineWidth = 6;
-    ctx.moveTo((coords[0] + 1) * gridSquareWidth,
-               (coords[1] + 0) * gridSquareHeight + yOffset);
+    ctx.moveTo(coords[0] * gridSquareWidth,
+               coords[1] * gridSquareHeight + yOffset);
     coords.splice(0, 2);
     while (coords.length) {
-      ctx.lineTo((coords[0] + 1) * gridSquareWidth,
-                 (coords[1] + 0) * gridSquareHeight + yOffset);
+      ctx.lineTo(coords[0] * gridSquareWidth,
+                 coords[1] * gridSquareHeight + yOffset);
       coords.splice(0, 2);
     }
     ctx.stroke();
@@ -399,7 +406,7 @@
 
   // eslint-disable-next-line max-params
   const drawJoin = function(parentx, parenty, x, y) {
-    if (!parentx) {
+    if (parentx === null) {
       return;
     }
     const midy = (parenty + y) / 2;
@@ -551,7 +558,9 @@
     // drawSubtree(top, (canvas.width / gridSquareWidth - 1 - top.width) / 2, 0, undefined, undefined, top.width);
 
     const topNode = nodify(findTop(selectedPersonId));
-    topNode.draw(0, 0, null, null, canvas.width / gridSquareWidth - 1);
+    console.log(canvas.width, gridSquareWidth, canvas.width / gridSquareWidth);;;
+    console.log(topNode);;;
+    topNode.draw((canvas.width / gridSquareWidth - topNode.width) / 2, 0.5, null, null, topNode.width);
 
     (function drawUnconnectedNodes() {
       let x = 0;
