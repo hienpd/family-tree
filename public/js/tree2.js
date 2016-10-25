@@ -23,8 +23,6 @@
 
   window.addEventListener('resize', resize);
 
-  let persons;
-
   // Forward function declarations
   let initData; // eslint-disable-line prefer-const
   let drawTree; // eslint-disable-line prefer-const
@@ -47,6 +45,8 @@
 
   resize();
 
+  let persons;
+  let firstFictitiousId;
   let personsById;
   let materix;
 
@@ -61,6 +61,7 @@
         person.parents.length = 0;
       }
     }
+    firstFictitiousId = maxId + 1;
     for (const person of persons) {
       if (person.parents.length === 1) {  // just one parent?
         maxId += 1;                       // create fictitious parent
@@ -187,7 +188,7 @@
     }
     draw(left, level, parentx, parenty, parentw) {
       const offset = (parentw - 1) / 2 + 0.5; // horizontal offset to center node.
-      drawNodeEx(this.id, left + offset, level);
+      drawNode(this.id, left + offset, level);
       drawJoin(parentx, parenty, left + offset, level);
     }
   }
@@ -202,8 +203,8 @@
     }
     draw(left, level, parentx, parenty, parentw) {
       const offset = (parentw - 2) / 2 + 0.5; // horizontal offset to center double node.
-      drawNodeEx(this.id, left + offset, level);
-      drawNodeEx(this.mateId, left + offset + 1, level);
+      drawNode(this.id, left + offset, level);
+      drawNode(this.mateId, left + offset + 1, level);
       drawJoin(parentx, parenty, left + offset, level);
       drawLine([left + offset, level, left + offset + 1, level])
       const childrenWidth = sumWidths(this.children);
@@ -234,9 +235,9 @@
       xs[0] = left + leftActualWidth / 2 - 0.5 + (leftActualWidth === 1 ? 0.5 : 0);
       xs[2] = leftLeft + leftActualWidth + rightActualWidth / 2 + 0.5;
       xs[1] = (xs[0] + xs[2]) / 2;
-      drawNodeEx(this.ids[0], xs[0], level);
-      drawNodeEx(this.ids[1], xs[1], level);
-      drawNodeEx(this.ids[2], xs[2], level);
+      drawNode(this.ids[0], xs[0], level);
+      drawNode(this.ids[1], xs[1], level);
+      drawNode(this.ids[2], xs[2], level);
       drawLine([xs[0], level, xs[2], level]);
       drawJoin(parentx, parenty, xs[this.ids.indexOf(this.id)], level);
       drawNodes(this.leftChildren, leftLeft, level + 1, xs[0] + 0.5, level, leftActualWidth);
@@ -250,11 +251,6 @@
       left += node.width;
     }
   }
-
-  const drawNodeEx = function(id, x, y) {
-    const person = personsById[id];
-    drawNode(`${person.given_name} ${person.family_name}`, person.id, selectedPersonId, x, y);
-  };
 
   const nodify = function(id) {
     // Given an id, creates an appropriate Node and its
@@ -296,18 +292,33 @@
   let maxLevel = 0;
 
   // eslint-disable-next-line max-params
-  const drawNode = function(name, id, selectedId, x, y) {
-    const $node = $(`
-      <div class="node">
-      ${name}
-      <a class="edit btn-floating yellow" data-id="${id}">
-      <i class="tiny material-icons">mode_edit</i>
-      </a>
-      </div>`
-    );
+  const drawNode = function(id, x, y) {
+    let $node;
 
-    if (id === selectedId) {
-      $node.addClass('selected');
+    if (id < firstFictitiousId) {
+      const person = personsById[id];
+      const name = `${person.given_name} ${person.family_name}`;
+      $node = $(`
+        <div class="node">
+          ${name}
+          <a class="edit btn-floating yellow" data-id="${id}">
+            <i class="tiny material-icons">mode_edit</i>
+          </a>
+        </div>`
+      );
+
+      if (id === selectedPersonId) {
+        $node.addClass('selected');
+      }
+
+    }
+    else {
+      $node = $(`
+        <div class="node">
+          (Unknown)
+        </div>`
+      );
+
     }
     $('.tree-div').append(
       $node.css({
